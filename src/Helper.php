@@ -6,7 +6,7 @@ class Helper {
 
 
     /**
-     * Parse the options passed to cpdbase functions
+     * Simulated named arguments using associative arrays
      * Basically just merge the two arrays, giving user specified options the preference
      * Also ensures that each paramater in the user array is valid
      */
@@ -91,7 +91,7 @@ class Helper {
 
     public static function cleanupArray($array) {
 
-        $newArray = array();
+        $newArray = [];
 
         $array = static::toArray($array);
 
@@ -145,11 +145,11 @@ class Helper {
             }
 
             # Sortable format (His)
-            return array(
+            return [
                 floor($time / 10000),
                 floor(($time / 100) % 100),
                 $time % 100,
-            );
+            ];
 
         };
 
@@ -262,10 +262,10 @@ class Helper {
 
     public function getBestDivisor($rows,$options=false) {
 
-        $options = $this->parseOptions($options,array(
+        $options = $this->getOptions($options,[
             "min"   =>  5,
             "max"   =>  10,
-        ));
+        ]);
 
         if($rows <= $options["max"]) {
             return $rows;
@@ -374,22 +374,22 @@ class Helper {
      */
     public function checkPassword($password,$options=false) {
 
-        $options = $this->_parseOptions($options,array(
+        $options = $this->getOptions($options,[
             "length"    =>  8,
             "unique"    =>  4,
             "lowercase" =>  true,
             "uppercase" =>  true,
             "alpha"     =>  true,
             "numeric"   =>  true,
-        ));
+        ]);
 
-        $problems = array();
+        $problems = [];
 
         $len = strlen($password);
         if($len < $options["length"]) {
             $problems["length"] = "Passwords must be at least " . $options["length"] . " characters long";
         }
-        $unique = array();
+        $unique = [];
         for($i = 0; $i < $len; $i++) {
             $unique[$password[$i]]++;
         }
