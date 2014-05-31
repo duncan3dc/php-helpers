@@ -231,4 +231,33 @@ class Helper {
     }
 
 
+    public static function url($url,$params=false) {
+
+        if(!is_array($params) || count($params) < 1) {
+            return $url;
+        }
+
+        $pos = strpos($url,"?");
+
+        # If there is no question mark in the url then set this as the first parameter
+        if($pos === false) {
+            $url .= "?";
+
+        # If the question mark is the last character then no appending is required
+        } elseif($pos != (strlen($url) - 1)) {
+
+            # If the last character is not an ampersand then append one
+            if(substr($url,-1) != "&") {
+                $url .= "&";
+            }
+
+        }
+
+        $url .= http_build_query($params);
+
+        return $url;
+
+    }
+
+
 }
