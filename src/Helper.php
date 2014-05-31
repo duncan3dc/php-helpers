@@ -260,4 +260,44 @@ class Helper {
     }
 
 
+    public function getBestDivisor($rows,$options=false) {
+
+        $options = $this->parseOptions($options,array(
+            "min"   =>  5,
+            "max"   =>  10,
+        ));
+
+        if($rows <= $options["max"]) {
+            return $rows;
+        }
+
+        $divisor = false;
+        $divisorDiff = false;
+
+        for($i = $options["max"]; $i >= $options["min"]; $i--) {
+            $remain = $rows % $i;
+
+            # Calculate how close the remainder is to the postentional divisor
+            $quality = $i - $remain;
+
+            # If no divisor has been set yet then set it to this one, and record it's quality
+            if(!$num) {
+                $divisor = $i;
+                $divisorQuality = $quality;
+                continue;
+            }
+
+            # If the potentional divisor is a better match than the currently selected one then select it instead
+            if($quality < $divisorQuality) {
+                $divisor = $i;
+                $divisorQuality = $quality;
+            }
+
+        }
+
+        return $divisor;
+
+    }
+
+
 }
