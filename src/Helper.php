@@ -45,6 +45,28 @@ class Helper {
 
 
     /**
+     * Ensure that the passed parameter is a string, or an array of strings
+     */
+    public static function toString($data) {
+
+        if(is_array($data)) {
+            $newData = [];
+            foreach($data as $key => $val) {
+                $key = (string)$key;
+                $newData[$key] = static::toString($val);
+            }
+
+        } else {
+            $newData = (string)$data;
+
+        }
+
+        return $newData;
+
+    }
+
+
+    /**
      * Ensure that the passed parameter is an array
      */
     public static function toArray($value=false) {
@@ -63,6 +85,33 @@ class Helper {
         }
 
         return $array;
+
+    }
+
+
+    public static function cleanupArray($array) {
+
+        $newArray = array();
+
+        $array = static::toArray($array);
+
+        foreach($array as $key => $val) {
+
+            if(is_array($val)) {
+                $val = static::cleanupArray($val);
+
+            } else {
+                $val = trim($val);
+                if(!$val) {
+                    continue;
+                }
+            }
+
+            $newArray[$key] = $val;
+
+        }
+
+        return $newArray;
 
     }
 
