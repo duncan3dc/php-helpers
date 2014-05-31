@@ -300,4 +300,71 @@ class Helper {
     }
 
 
+    public static function createPassword($options=false) {
+
+        $options = static::getOptions($options,[
+            "bad"       =>  ["1","l","I","5","S","0","O","o"],
+            "exclude"   =>  [],
+            "length"    =>  10,
+            "lowercase" =>  true,
+            "uppercase" =>  true,
+            "numbers"   =>  true,
+            "specialchars"  =>  true,
+        ]);
+
+        $password = "";
+
+        if(!$options["lowercase"] && !$options["specialchars"] && !$options["numbers"] && !$options["uppercase"]) {
+            return $password;
+        }
+
+        $exclude = array_merge($options["bad"],$options["exclude"]);
+
+        # Keep adding characters until the password is at least as long as required
+        while(strlen($password) < $options["length"]) {
+
+            # Add a few characters from each acceptable set
+
+            if($options["lowercase"]) {
+                for($i = 0; $i < rand(1,3); $i++) {
+                    $password .= chr(rand(97,122));
+                }
+            }
+
+            if($options["specialchars"]) {
+                for($i = 0; $i < rand(1,3); $i++) {
+                    switch(rand(0,3)) {
+                        case 0: $password .= chr(rand(33,47));      break;
+                        case 1: $password .= chr(rand(58,64));      break;
+                        case 2: $password .= chr(rand(91,93));      break;
+                        case 3: $password .= chr(rand(123,126));    break;
+                    }
+                }
+            }
+
+            if($options["numbers"]) {
+                for($i = 0; $i < rand(1,3); $i++) {
+                    $password .= chr(rand(48,57));
+                }
+            }
+
+            if($options["uppercase"]) {
+                for($i = 0; $i < rand(1,3); $i++) {
+                    $password .= chr(rand(65,90));
+                }
+            }
+
+            # Remove excluded characters
+            $password = str_replace($exclude,"",$password);
+
+        }
+
+        # Reduce the length of the generated password to the required length
+        $password = substr($password,0,$options["length"]);
+
+        return $password;
+
+    }
+
+
 }
