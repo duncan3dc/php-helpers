@@ -367,4 +367,52 @@ class Helper {
     }
 
 
+    /**
+     * Check if a password conforms to the specificed complexitiy rules
+     * If the password passes all tests then the function returns an empty array
+     * Otherwise it returns an array of all the checks that failed
+     */
+    public function checkPassword($password,$options=false) {
+
+        $options = $this->_parseOptions($options,array(
+            "length"    =>  8,
+            "unique"    =>  4,
+            "lowercase" =>  true,
+            "uppercase" =>  true,
+            "alpha"     =>  true,
+            "numeric"   =>  true,
+        ));
+
+        $problems = array();
+
+        $len = strlen($password);
+        if($len < $options["length"]) {
+            $problems["length"] = "Passwords must be at least " . $options["length"] . " characters long";
+        }
+        $unique = array();
+        for($i = 0; $i < $len; $i++) {
+            $unique[$password[$i]]++;
+        }
+        if(count($unique) < $options["unique"]) {
+            $problems["unique"] = "Passwords must contain at least " . $options["unique"] . " unique characters";
+        }
+
+        if(!preg_match("/[a-z]/",$password)) {
+            $problems["lowercase"] = "Passwords must contain at least 1 lowercase letter";
+        }
+        if(!preg_match("/[A-Z]/",$password)) {
+            $problems["uppercase"] = "Passwords must contain at least 1 uppercase letter";
+        }
+        if(!preg_match("/[a-z]/i",$password)) {
+            $problems["alpha"] = "Passwords must contain at least 1 letter";
+        }
+        if(!preg_match("/[0-9]/",$password)) {
+            $problems["numeric"] = "Passwords must contain at least 1 number";
+        }
+
+        return $problems;
+
+    }
+
+
 }
