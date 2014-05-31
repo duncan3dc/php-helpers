@@ -116,4 +116,119 @@ class Helper {
     }
 
 
+    public static function date($format,$date,$time=false) {
+
+        if(!$date = trim($date)) {
+            return 0;
+        }
+
+        if(preg_match("/[a-z]/i",$date)) {
+            return 0;
+        }
+
+        # Define some time handling code to be used in several places below
+        $timeFunc = function($time=false) {
+
+            $return = [12,0,0];
+
+            if(!$time) {
+                return $return;
+            }
+
+            if(preg_match("/[a-z]/i",$date)) {
+                return $return;
+            }
+
+            # Human readable format (h:i:s)
+            if(strpos($time,":")) {
+                return explode(":",$time);
+            }
+
+            # Sortable format (His)
+            return array(
+                floor($time / 10000),
+                floor(($time / 100) % 100),
+                $time % 100,
+            );
+
+        };
+
+        # Sql date format (yyyy-mm-dd hh:ii:ss) (with optional milliseconds)
+        if(preg_match("/^([0-9]{4})-([0-9]{2})-([0-9]{2})\s+([0-9]{2}):([0-9]{2}):([0-9]{2})(\.[0-9]{6})?$/",$date,$matches)) {
+            list($null,$y,$m,$d,$h,$i,$s) = $matches;
+            $date = mktime($h,$i,$s,$m,$d,$y);
+
+        # Human readable format (d/m/y or d-m-y)
+        } elseif(strpos($date,"/") || strpos($date,"-")) {
+            $char = (strpos($date,"/")) ? "/" : "-";
+            if(!$time && strpos($date," ")) {
+                list($date,$time) = explode(" ",$date);
+            }
+            list($d,$m,$y) = explode($char,$date);
+            list($h,$i,$s) = $timeFunc($time);
+            $date = mktime($h,$i,$s,$m,$d,$y);
+
+        # Sortable format (YmdHi/YmdHis)
+        } elseif($date > 200000000000) {
+            $y = substr($date,0,4);
+            $m = substr($date,4,2);
+            $d = substr($date,6,2);
+            $h = substr($date,8,2);
+            $i = substr($date,10,2);
+            $s = substr($date,12,2);
+            $date = mktime($h,$i,$s,$m,$d,$y);
+
+        # Sortable format (Date only - Ymd with optional separate time)
+        } elseif($date < 99999999) {
+            $y = substr($date,0,4);
+            $m = substr($date,4,2);
+            $d = substr($date,6,2);
+
+            if(!$time && strpos($date," ")) {
+                list($date,$time) = explode(" ",$date);
+            }
+            list($h,$i,$s) = $timeFunc($time);
+
+            $date = mktime($h,$i,$s,$m,$d,$y);
+
+        }
+
+        $return = date($format,$date);
+
+        # If the result looks like a number then return it as an int
+        if(preg_match("/^[0-9]+$/",$return)) {
+            # Don't attempt to cast a number out of the standard int range
+            if($return < 2147483648) {
+                $return = (int)$return;
+            }
+        }
+
+        return $return;
+
+    }
+
+
+    public static function dateDiff($from,$to=false) {
+
+        if(!$to) {
+            $to = $from;
+            $from = date("d/m/Y");
+        }
+
+        if(!$dateFrom = static::date("U",$from)) {
+            return false;
+        }
+
+        if(!$dateTo = static::date("U",$to)) {
+            return false;
+        }
+
+        $diff = $dateTo - $dateFrom;
+        $days = round($diff / 86400);
+
+        return $days;
+
+    }
+
+
 }
