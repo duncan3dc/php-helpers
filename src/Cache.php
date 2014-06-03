@@ -49,7 +49,7 @@ class Cache {
     }
 
 
-    public function call($key,$func) {
+    public static function call($key,$func) {
 
         $trace = debug_backtrace();
         if($function = $trace[1]["function"]) {
