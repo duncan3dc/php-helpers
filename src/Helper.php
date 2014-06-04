@@ -415,4 +415,144 @@ class Helper {
     }
 
 
+    public static function curl($options,$body=false) {
+
+        # If the options weren't passed as an array then it is just a simple url request
+        if(!is_array($options)) {
+            $options = ["url" => $options];
+        }
+
+        $options = Helper::getOptions($options,[
+            "url"           =>  false,
+            "headers"       =>  false,
+            "connect"       =>  5,
+            "timeout"       =>  60,
+            "follow"        =>  true,
+            "verifyssl"     =>  true,
+            "cookies"       =>  false,
+            "put"           =>  false,
+            "custom"        =>  false,
+            "nobody"        =>  false,
+            "useragent"     =>  false,
+            "returnheaders" =>  false,
+            "curlopts"      =>  [],
+        ]);
+
+        if(!$url = trim($options["url"])) {
+            throw new \Exception("No url specified");
+        }
+
+        # If an array of post data has been passed then convert it into a query string
+        if(is_array($body)) {
+            $body = http_build_query($body);
+        }
+
+        $curlopts = [
+            CURLOPT_URL             =>  $url,
+            CURLOPT_RETURNTRANSFER  =>  true,
+            CURLOPT_NOBODY          =>  $options["nobody"],
+        ];
+
+        if($options["put"]) {
+            $file = fopen("php://memory","w");
+            fwrite($file,$body);
+            rewind($file);
+
+            $curlopts[CURLOPT_PUT] = true;
+            $curlopts[CURLOPT_INFILE] = $file;
+            $curlopts[CURLOPT_INFILESIZE] = strlen($body);
+
+        } elseif($body) {
+            $curlopts[CURLOPT_POST] = true;
+            $curlopts[CURLOPT_POSTFIELDS] = $body;
+
+        }
+
+        if($custom = $options["custom"]) {
+            $curlopts[CURLOPT_CUSTOMREQUEST] = $custom;
+        }
+
+        if($headers = $options["headers"]) {
+            $header = "";
+            foreach($headers as $key => $val) {
+                $header[] = $key . ": " . $val;
+            }
+            $curlopts[CURLOPT_HTTPHEADER] = $header;
+        }
+
+        $curlopts[CURLOPT_CONNECTTIMEOUT] = round($options["connect"]);
+        $curlopts[CURLOPT_TIMEOUT] = round($options["timeout"]);
+
+        if($options["follow"]) {
+            $curlopts[CURLOPT_FOLLOWLOCATION] = true;
+        }
+
+        if(!$options["verifyssl"]) {
+            $curlopts[CURLOPT_SSL_VERIFYPEER] = false;
+        }
+
+        if($cookies = $options["cookies"]) {
+            $curlopts[CURLOPT_COOKIEFILE]   =   $cookies;
+            $curlopts[CURLOPT_COOKIEJAR]    =   $cookies;
+        }
+
+        if($useragent = $options["useragent"]) {
+            $curlopts[CURLOPT_USERAGENT] = $useragent;
+        }
+
+        if($options["returnheaders"]) {
+            $curlopts[CURLOPT_HEADER] = true;
+        }
+
+        if(count($options["curlopts"]) > 0) {
+            foreach($options["curlopts"] as $key => $val) {
+                $curlopts[$key] = $val;
+            }
+        }
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl,$curlopts);
+
+        $result = curl_exec($curl);
+
+        $error = curl_error($curl);
+
+        if($options["returnheaders"]) {
+            $info = curl_getinfo($curl);
+        }
+
+        curl_close($curl);
+
+        if($result === false) {
+            throw new \Exception($error);
+        }
+
+        if($options["returnheaders"]) {
+            $header = substr($result, 0, $info["header_size"]);
+            $lines = explode("\n",$header);
+            $status = array_shift($lines);
+            $headers = [];
+            foreach($lines as $line) {
+                if(!trim($line)) {
+                    continue;
+                }
+                $bits = explode(":",$line);
+                $key = array_shift($bits);
+                $headers[$key] = trim(implode(":",$bits));
+            }
+            $body = substr($result, $info["header_size"]);
+            return [
+                "status"    =>  $status,
+                "headers"   =>  $headers,
+                "body"      =>  $body,
+                "response"  =>  $result,
+            ];
+        }
+
+        return $result;
+
+    }
+
+
 }

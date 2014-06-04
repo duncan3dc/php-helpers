@@ -12,6 +12,7 @@
         "role": "Developer"
     }],
     "require": {
+        "ext-curl": "*",
         "ext-date": "*",
         "ext-session": "*",
         "php": ">=5.4.0"
