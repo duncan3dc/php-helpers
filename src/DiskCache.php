@@ -96,9 +96,9 @@ class DiskCache {
 
         $trace = debug_backtrace();
         if($function = $trace[1]["function"]) {
-            $key = $function . "::" . $key;
+            $key = $function . "_" . $key;
             if($class = $trace[1]["class"]) {
-                $key = $class . "::" . $key;
+                $key = $class . "_" . $key;
             }
         }
 
