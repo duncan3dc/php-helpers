@@ -425,8 +425,8 @@ class Helper {
         $options = Helper::getOptions($options,[
             "url"           =>  false,
             "headers"       =>  false,
-            "connect"       =>  5,
-            "timeout"       =>  60,
+            "connect"       =>  0,
+            "timeout"       =>  0,
             "follow"        =>  true,
             "verifyssl"     =>  true,
             "cookies"       =>  false,
