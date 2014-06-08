@@ -109,7 +109,7 @@ class Env {
 
         });
 
-        return $vars[$va];
+        return $vars[$var];
 
     }
 
