@@ -93,21 +93,40 @@ class Env {
     }
 
 
-    public static function getVar($var) {
+    public static function getVars() {
 
-        $vars = Cache::call("envvars.json",function() {
+        return Cache::call("envvars.json",function() {
 
             $path = static::path("data/env.json");
 
-            if(!$json = file_get_contents($path)) {
-                throw new \Exception("Failed to load the configuration file (" . $path . ")");
+            if(!file_exists($path)) {
+                return [];
             }
 
+            $json = file_get_contents($path);
             $vars = json_decode($json,true);
 
             return Helper::toArray($vars);
 
         });
+
+    }
+
+
+    public static function getVar($var) {
+
+        return static::getVars()[$var];
+
+    }
+
+
+    public static function requireVar($var) {
+
+        $vars = static::getVars();
+
+        if(!array_key_exists($var,$vars)) {
+            throw new \Exception("Failed to get the environment variable (" . $var . ")");
+        }
 
         return $vars[$var];
 
