@@ -178,7 +178,13 @@ class Helper {
             $s = substr($date,12,2);
             $date = mktime($h,$i,$s,$m,$d,$y);
 
-        # Sortable format (Date only - Ymd with optional separate time)
+        # Sortable format (Year and month only)
+        } elseif($date < 999999) {
+            $y = floor($date / 100);
+            $m = $date % 100;
+            $date = mktime(12,0,0,$m,1,$y);
+
+        # Sortable format (Ymd with optional separate time)
         } elseif($date < 99999999) {
             $y = substr($date,0,4);
             $m = substr($date,4,2);
@@ -197,7 +203,7 @@ class Helper {
 
         # If the result looks like a number then return it as an int
         if(preg_match("/^[0-9]+$/",$return)) {
-            # Don't attempt to cast a number out of the standard int range
+            # Don't attempt to cast a number out of the standard 32-bit int range
             if($return < 2147483648) {
                 $return = (int)$return;
             }
