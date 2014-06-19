@@ -154,7 +154,10 @@ class Helper {
         };
 
         # Sql date format (yyyy-mm-dd hh:ii:ss) (with optional milliseconds)
-        if(preg_match("/^([0-9]{4})-([0-9]{2})-([0-9]{2})\s+([0-9]{2}):([0-9]{2}):([0-9]{2})(\.[0-9]{6})?$/",$date,$matches)) {
+        if(preg_match("/^([0-9]{4})-([0-9]{2})-([0-9]{2})[\s-]([0-9]{2})[:\.]([0-9]{2})[:\.]([0-9]{2})(\.[0-9]{6})?$/",$date,$matches)) {
+            list($null,$y,$m,$d,$h,$i,$s) = $matches;
+            $date = mktime($h,$i,$s,$m,$d,$y);
+
             list($null,$y,$m,$d,$h,$i,$s) = $matches;
             $date = mktime($h,$i,$s,$m,$d,$y);
 
@@ -183,6 +186,19 @@ class Helper {
             $y = floor($date / 100);
             $m = $date % 100;
             $date = mktime(12,0,0,$m,1,$y);
+
+        # IBM DB2 format (cymd with optional separate time)
+        } elseif($date < 9999999) {
+            $y = floor($date / 10000) + 1900;
+            $m = floor(($date / 100) % 100);
+            $d = $date % 100;
+
+            if(!$time && strpos($date," ")) {
+                list($date,$time) = explode(" ",$date);
+            }
+            list($h,$i,$s) = $timeFunc($time);
+
+            $date = mktime($h,$i,$s,$m,$d,$y);
 
         # Sortable format (Ymd with optional separate time)
         } elseif($date < 99999999) {
