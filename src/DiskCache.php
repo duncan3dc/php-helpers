@@ -98,7 +98,7 @@ class DiskCache {
         if($function = $trace[1]["function"]) {
             $key = $function . "_" . $key;
             if($class = $trace[1]["class"]) {
-                $key = $class . "_" . $key;
+                $key = str_replace("\\","_",$class) . "_" . $key;
             }
         }
 
