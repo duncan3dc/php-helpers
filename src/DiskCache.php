@@ -13,6 +13,10 @@ class DiskCache {
             $filename = static::$path . "/" . $filename;
         }
 
+        if(substr($filename,-5) != ".json") {
+            $filename .= ".json";
+        }
+
         $path = pathinfo($filename,PATHINFO_DIRNAME);
 
         # Ensure the cache directory exists
