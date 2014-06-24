@@ -4,7 +4,16 @@ namespace duncan3dc\Helpers;
 
 class Cache {
 
+    private static $instances = [];
     private static $data = [];
+
+
+    public static function getInstance($name) {
+        if(!isset(static::$instances[$name])) {
+            static::$instances[$name] = new CacheInstance();
+        }
+        return static::$instances[$name];
+    }
 
 
     public static function check($key) {
