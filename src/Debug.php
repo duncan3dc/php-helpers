@@ -7,6 +7,7 @@ class Debug {
     protected static $on = false;
     protected static $time = 0;
     protected static $mode = "text";
+    protected static $indent = 0;
 
 
     public static function on($mode="text") {
@@ -41,6 +42,19 @@ class Debug {
     }
 
 
+    protected static function indent() {
+
+        $char = (static::$mode == "html") ? "&nbsp;" : " ";
+
+        for($i = 0; $i < static::$indent; $i++) {
+            for($y = 0; $y < 4; $y++) {
+                echo $char;
+            }
+        }
+
+    }
+
+
     public static function text($message,$data=false) {
 
         if(!static::$on) {
@@ -48,11 +62,13 @@ class Debug {
         }
 
         echo "--------------------------------------------------------------------------------\n";
+        static::indent();
         echo static::getTime() . " - " . $message . "\n";;
         if(is_array($data)) {
             print_r($data);
         } elseif($data) {
-            echo "\t" . $data . "\n";
+            static::indent();
+            echo "    " . $data . "\n";
         }
 
     }
@@ -66,10 +82,12 @@ class Debug {
 
         echo "<hr>";
         echo "<i>";
+            static::indent();
             echo "<b>" . static::getTime() . " - " . $message . "</b>";
             if(is_array($data)) {
                 Html::print_r($data);
             } elseif($data) {
+                static::indent();
                 echo "&nbsp;&nbsp;&nbsp;&nbsp;" . $data . "<br>";
             }
         echo "</i>";
@@ -83,7 +101,11 @@ class Debug {
 
         static::output($message . " [START]");
 
+        static::$indent++;
+
         $function();
+
+        static::$indent--;
 
         static::output($message . " [END] (" . number_format(microtime(true) - $time,3) . ")");
 
