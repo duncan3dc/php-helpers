@@ -41,16 +41,25 @@ class Env {
     }
 
 
-    public static function getHostname() {
+    public static function getHostName() {
 
         return Cache::call("hostname",function() {
 
             # If the hostname is in the server array (usually set by apache) then use that
-            if($host = $_SERVER["HTTP_HOST"]) {
+            if(!$uname && $host = $_SERVER["HTTP_HOST"]) {
                 return $host;
             }
 
-            # Otherwise use the uname function to get the hostname of this machine
+            # Otherwise use the get the hostname of this machine
+            return static::getMachineName();
+        });
+
+    }
+
+
+    public static function getMachineName() {
+
+        return Cache::call("machine",function() {
             return php_uname("n");
         });
 
