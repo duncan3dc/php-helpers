@@ -96,7 +96,7 @@ class DiskCache {
     }
 
 
-    public static function call($key,$func) {
+    public static function call($key, callable $func) {
 
         $trace = debug_backtrace();
         if($function = $trace[1]["function"]) {

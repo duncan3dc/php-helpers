@@ -95,7 +95,7 @@ class Debug {
     }
 
 
-    public static function call($message,$function) {
+    public static function call($message, callable $func) {
 
         $time = microtime(true);
 
@@ -103,7 +103,7 @@ class Debug {
 
         static::$indent++;
 
-        $function();
+        $func();
 
         static::$indent--;
 
