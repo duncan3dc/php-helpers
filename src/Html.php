@@ -77,12 +77,12 @@ class Html {
                 "suffix"    =>  "",
             ],
             "EUR"   =>  [
-                "title"     =>  "Euros",
+                "title"     =>  "Euro",
                 "prefix"    =>  "€",
                 "suffix"    =>  "",
             ],
             "USD"   =>  [
-                "title"     =>  "US Dollars",
+                "title"     =>  "US Dollar",
                 "prefix"    =>  "$",
                 "suffix"    =>  "",
             ],
@@ -100,6 +100,16 @@ class Html {
                 "title"     =>  "Swedish Krona",
                 "prefix"    =>  "",
                 "suffix"    =>  "kr",
+            ],
+            "RUB"   =>  [
+                "title"     =>  "Russia Ruble",
+                "prefix"    =>  "Р",
+                "suffix"    =>  "",
+            ],
+            "ILS"   =>  [
+                "title"     =>  "Israeli shekel",
+                "prefix"    =>  "₪",
+                "suffix"    =>  "",
             ],
         ];
 
