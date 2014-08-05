@@ -31,7 +31,7 @@ class Env
     {
         $path = static::getPath();
 
-        if ($append[0] != "/") {
+        if (substr($append, 0, 1) != "/") {
             $path .= "/";
         }
 
@@ -41,12 +41,19 @@ class Env
     }
 
 
+    public static function realpath($append)
+    {
+        $path = static::path($append);
+        return realpath($path);
+    }
+
+
     public static function getHostName()
     {
         return Cache::call("hostname", function() {
 
             # If the hostname is in the server array (usually set by apache) then use that
-            if (!$uname && $host = $_SERVER["HTTP_HOST"]) {
+            if (isset($_SERVER["HTTP_HOST"]) && $host = $_SERVER["HTTP_HOST"]) {
                 return $host;
             }
 
@@ -117,7 +124,13 @@ class Env
 
     public static function getVar($var)
     {
-        return static::getVars()[$var];
+        $vars = static::getVars();
+
+        if (!array_key_exists($var, $vars)) {
+            return null;
+        }
+
+        return $vars[$var];
     }
 
 
