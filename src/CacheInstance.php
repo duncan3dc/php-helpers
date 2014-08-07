@@ -19,6 +19,9 @@ class CacheInstance
 
     public function get($key)
     {
+        if (!$this->check($key)) {
+            return null;
+        }
         return $this->data[$key];
     }
 
@@ -34,7 +37,9 @@ class CacheInstance
     public function clear($key = null)
     {
         if ($key) {
-            unset($this->data[$key]);
+            if (isset($this->data[$key])) {
+                unset($this->data[$key]);
+            }
         } else {
             $this->data = [];
         }
