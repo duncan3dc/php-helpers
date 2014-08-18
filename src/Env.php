@@ -4,6 +4,7 @@ namespace duncan3dc\Helpers;
 
 class Env
 {
+    protected static $vars;
 
     public static function getPath()
     {
@@ -106,19 +107,19 @@ class Env
 
     public static function getVars()
     {
-        return Cache::call("envvars.json", function() {
-
+        if (!is_array(static::$vars)) {
             $path = static::path("data/env.json");
 
-            if (!file_exists($path)) {
-                return [];
+            try {
+                $vars = Json::decodeFromFile($path);
+            } catch(\Exception $e) {
+                $vars = [];
             }
 
-            $json = file_get_contents($path);
-            $vars = Json::decode($json);
+            static::$vars = Helper::toArray($vars);
+        }
 
-            return Helper::toArray($vars);
-        });
+        return static::$vars;
     }
 
 
@@ -143,5 +144,14 @@ class Env
         }
 
         return $vars[$var];
+    }
+
+
+    public static function setVar($var, $value)
+    {
+        # Ensure the vars have been read from the disk
+        static::getVars();
+
+        static::$vars[$var] = $value;
     }
 }

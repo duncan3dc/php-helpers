@@ -94,4 +94,9 @@ class EnvTest extends \PHPUnit_Framework_TestCase
         $this->assertSame("Failed to get the environment variable (does-not-exist)", $exception);
     }
 
+    public function testSetVar1()
+    {
+        Env::setVar("test-new-var", "ok");
+        $this->assertSame("ok", Env::getVar("test-new-var"));
+    }
 }
