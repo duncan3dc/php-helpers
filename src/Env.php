@@ -185,4 +185,10 @@ class Env
 
         static::$vars[$var] = $value;
     }
+
+
+    public static function getUserAgent()
+    {
+        return $_SERVER["USER_AGENT"];
+    }
 }
