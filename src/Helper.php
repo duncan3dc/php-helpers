@@ -143,17 +143,18 @@ class Helper
             ];
         };
 
-        # Sql date format (yyyy-mm-dd hh:ii:ss) (with optional milliseconds)
-        if (preg_match("/^([0-9]{4})-([0-9]{2})-([0-9]{2})[\s-]([0-9]{2})[:\.]([0-9]{2})[:\.]([0-9]{2})(\.[0-9]{6})?$/", $date, $matches)) {
-            list($null, $y, $m, $d, $h, $i, $s) = $matches;
-            $date = mktime($h, $i, $s, $m, $d, $y);
-
-            list($null, $y, $m, $d, $h, $i, $s) = $matches;
-            $date = mktime($h, $i, $s, $m, $d, $y);
-
         # Human readable universal format (yyyy-mm-dd)
-        } elseif (preg_match("/^([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})$/", $date, $matches)) {
-            $date = mktime(12, 0, 0, $matches[2], $matches[3], $matches[1]);
+        if (preg_match("/^([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})$/", $date, $matches)) {
+            list($h, $i, $s) = $timeFunc($time);
+            $date = mktime($h, $i, $s, $matches[2], $matches[3], $matches[1]);
+
+        # Sql date format (yyyy-mm-dd hh:ii:ss) (with optional milliseconds)
+        } elseif (preg_match("/^([0-9]{4})-([0-9]{2})-([0-9]{2})[\s-]([0-9]{2})[:\.]([0-9]{2})[:\.]([0-9]{2})(\.[0-9]{6})?$/", $date, $matches)) {
+            list($null, $y, $m, $d, $h, $i, $s) = $matches;
+            $date = mktime($h, $i, $s, $m, $d, $y);
+
+            list($null, $y, $m, $d, $h, $i, $s) = $matches;
+            $date = mktime($h, $i, $s, $m, $d, $y);
 
         # Human readable format (d/m/y or d-m-y)
         } elseif (strpos($date, "/") || strpos($date, "-")) {
