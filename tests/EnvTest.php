@@ -8,6 +8,7 @@ class EnvTest extends \PHPUnit_Framework_TestCase
 
     public function __construct()
     {
+        Env::usePath(Env::PATH_PHP_SELF);
         $this->path = pathinfo($_SERVER["PHP_SELF"], PATHINFO_DIRNAME);
 
         Json::encodeToFile(Env::path("data/env.json"), [

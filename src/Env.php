@@ -4,27 +4,58 @@ namespace duncan3dc\Helpers;
 
 class Env
 {
+    const PATH_DOCUMENT_ROOT    =   701;
+    const PATH_PHP_SELF         =   702;
+    const PATH_VENDOR_PARENT    =   703;
+    protected static $path;
     protected static $vars;
+
+    public static function usePath($path)
+    {
+
+        # Use the document root normally set via apache
+        if ($path == self::PATH_DOCUMENT_ROOT) {
+            if (!$path = $_SERVER["DOCUMENT_ROOT"]) {
+                throw new \Exception("DOCUMENT_ROOT not defined");
+            }
+            static::$path = $path;
+            return;
+        }
+
+        # Get the full path of the running script and use it's directory
+        if ($path == self::PATH_PHP_SELF) {
+            if (!$path = realpath($_SERVER["PHP_SELF"])) {
+                throw new \Exception("PHP_SELF not defined");
+            }
+            static::$path = pathinfo($path, PATHINFO_DIRNAME);
+            return;
+        }
+
+        # Calculate the parent of the vendor directory and use that
+        if ($path == self::PATH_VENDOR_PARENT) {
+            static::$path = realpath(__DIR__ . "/../../../..");
+            return;
+        }
+
+        if (is_dir($path)) {
+            static::$path = $path;
+        } else {
+            throw new \Exception("Invalid path specified");
+        }
+    }
+
 
     public static function getPath()
     {
-        $path = Cache::call("path", function() {
+        if (!static::$path) {
+            static::usePath(self::PATH_VENDOR_PARENT);
+        }
 
-            # If we have a document root (normally set via apache) then use that
-            if ($path = $_SERVER["DOCUMENT_ROOT"]) {
-                return $path;
-            }
-
-            # Get the full path of the running script and use it's directory
-            $path = realpath($_SERVER["PHP_SELF"]);
-            return pathinfo($path, PATHINFO_DIRNAME);
-        });
-
-        if (!$path) {
+        if (!static::$path) {
             throw new \Exception("Failed to establish the current environment path");
         }
 
-        return $path;
+        return static::$path;
     }
 
 
