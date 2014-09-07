@@ -53,7 +53,7 @@ class Image
     public static function getDate($path)
     {
         if ($path[0] != "/") {
-            $path = Env::path($path);
+            $path = Env::path($path, Env::PATH_DOCUMENT_ROOT);
         }
 
         if (!$exif = exif_read_data($path)) {
@@ -159,7 +159,7 @@ class Image
         if ($path[0] == "/") {
             $fullpath = $path;
         } else {
-            $fullpath = Env::path($path);
+            $fullpath = Env::path($path, Env::PATH_DOCUMENT_ROOT);
         }
 
         if ($basename = $options["basename"]) {
