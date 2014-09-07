@@ -12,9 +12,8 @@ class Env
 
     public static function usePath($path)
     {
-
         # Use the document root normally set via apache
-        if ($path == self::PATH_DOCUMENT_ROOT) {
+        if ($path === self::PATH_DOCUMENT_ROOT) {
             if (!$path = $_SERVER["DOCUMENT_ROOT"]) {
                 throw new \Exception("DOCUMENT_ROOT not defined");
             }
@@ -23,7 +22,7 @@ class Env
         }
 
         # Get the full path of the running script and use it's directory
-        if ($path == self::PATH_PHP_SELF) {
+        if ($path === self::PATH_PHP_SELF) {
             if (!$path = realpath($_SERVER["PHP_SELF"])) {
                 throw new \Exception("PHP_SELF not defined");
             }
@@ -32,7 +31,7 @@ class Env
         }
 
         # Calculate the parent of the vendor directory and use that
-        if ($path == self::PATH_VENDOR_PARENT) {
+        if ($path === self::PATH_VENDOR_PARENT) {
             static::$path = realpath(__DIR__ . "/../../../..");
             return;
         }
@@ -59,9 +58,17 @@ class Env
     }
 
 
-    public static function path($append)
+    public static function path($append, $use = null)
     {
         $path = static::getPath();
+
+        # If a different use has been requested then use it for this call only
+        if ($use) {
+            $previous = $path;
+            static::usePath($use);
+            $path = static::getPath();
+            static::usePath($previous);
+        }
 
         if (substr($append, 0, 1) != "/") {
             $path .= "/";
