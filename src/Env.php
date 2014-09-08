@@ -14,7 +14,7 @@ class Env
     {
         # Use the document root normally set via apache
         if ($path === self::PATH_DOCUMENT_ROOT) {
-            if (!$path = $_SERVER["DOCUMENT_ROOT"]) {
+            if (!$path = realpath($_SERVER["DOCUMENT_ROOT"])) {
                 throw new \Exception("DOCUMENT_ROOT not defined");
             }
             static::$path = $path;
