@@ -2,7 +2,7 @@
     "name": "duncan3dc/helpers",
     "type": "library",
     "description": "A collection of useful helper classes",
-    "keywords": ["session", "environment", "cache", "caching", "debug", "image", "files", "csv"],
+    "keywords": ["session", "environment", "cache", "caching", "debug", "image", "files", "filesystem", "csv"],
     "homepage": "https://github.com/duncan3dc/php-helpers",
     "license": "Apache-2.0",
     "authors": [{
