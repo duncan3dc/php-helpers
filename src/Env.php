@@ -14,7 +14,7 @@ class Env
     {
         # Use the document root normally set via apache
         if ($path === self::PATH_DOCUMENT_ROOT) {
-            if (!$path = realpath($_SERVER["DOCUMENT_ROOT"])) {
+            if (empty($_SERVER["DOCUMENT_ROOT"]) || !$path = realpath($_SERVER["DOCUMENT_ROOT"])) {
                 throw new \Exception("DOCUMENT_ROOT not defined");
             }
             static::$path = $path;
@@ -23,7 +23,7 @@ class Env
 
         # Get the full path of the running script and use it's directory
         if ($path === self::PATH_PHP_SELF) {
-            if (!$path = realpath($_SERVER["PHP_SELF"])) {
+            if (empty($_SERVER["PHP_SELF"]) || !$path = realpath($_SERVER["PHP_SELF"])) {
                 throw new \Exception("PHP_SELF not defined");
             }
             static::$path = pathinfo($path, PATHINFO_DIRNAME);
@@ -196,6 +196,9 @@ class Env
 
     public static function getUserAgent()
     {
+        if (empty($_SERVER["USER_AGENT"])) {
+            return "";
+        }
         return $_SERVER["USER_AGENT"];
     }
 }
