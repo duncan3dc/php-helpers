@@ -119,13 +119,13 @@ class Session
         }
 
         # If this key was just submitted via post then store it in the session data
-        if ($val = $_POST[$key]) {
+        if (isset($_POST[$key]) && $val = $_POST[$key]) {
             static::set($key, $val);
             return $val;
         }
 
         # If this key is part of the get data then store it in session data
-        if ($val = $_GET[$key]) {
+        if (isset($_GET[$key]) && $val = $_GET[$key]) {
             static::set($key, $val);
             return $val;
         }
