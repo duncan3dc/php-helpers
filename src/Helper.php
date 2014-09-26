@@ -274,7 +274,7 @@ class Helper
 
     public static function getBestDivisor($rows, $options = null)
     {
-        $options = $this->getOptions($options, [
+        $options = static::getOptions($options, [
             "min"   =>  5,
             "max"   =>  10,
         ]);
@@ -394,7 +394,7 @@ class Helper
      */
     public static function checkPassword($password, $options = null)
     {
-        $options = $this->getOptions($options, [
+        $options = static::getOptions($options, [
             "length"    =>  8,
             "unique"    =>  4,
             "lowercase" =>  true,
