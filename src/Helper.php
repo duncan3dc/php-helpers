@@ -272,7 +272,7 @@ class Helper
     }
 
 
-    public function getBestDivisor($rows, $options = null)
+    public static function getBestDivisor($rows, $options = null)
     {
         $options = $this->getOptions($options, [
             "min"   =>  5,
@@ -336,13 +336,15 @@ class Helper
             # Add a few characters from each acceptable set
 
             if ($options["lowercase"]) {
-                for ($i = 0; $i < rand(1, 3); $i++) {
+                $max = rand(1, 3);
+                for ($i = 0; $i < $max; ++$i) {
                     $password .= chr(rand(97, 122));
                 }
             }
 
             if ($options["specialchars"]) {
-                for ($i = 0; $i < rand(1, 3); $i++) {
+                $max = rand(1, 3);
+                for ($i = 0; $i < $max; ++$i) {
                     switch (rand(0, 3)) {
                         case 0:
                             $password .= chr(rand(33, 47));
@@ -361,13 +363,15 @@ class Helper
             }
 
             if ($options["numbers"]) {
-                for ($i = 0; $i < rand(1, 3); $i++) {
+                $max = rand(1, 3);
+                for ($i = 0; $i < $max; ++$i) {
                     $password .= chr(rand(48, 57));
                 }
             }
 
             if ($options["uppercase"]) {
-                for ($i = 0; $i < rand(1, 3); $i++) {
+                $max = rand(1, 3);
+                for ($i = 0; $i < $max; ++$i) {
                     $password .= chr(rand(65, 90));
                 }
             }
@@ -388,7 +392,7 @@ class Helper
      * If the password passes all tests then the function returns an empty array
      * Otherwise it returns an array of all the checks that failed
      */
-    public function checkPassword($password, $options = null)
+    public static function checkPassword($password, $options = null)
     {
         $options = $this->getOptions($options, [
             "length"    =>  8,
@@ -406,7 +410,7 @@ class Helper
             $problems["length"] = "Passwords must be at least " . $options["length"] . " characters long";
         }
         $unique = [];
-        for ($i = 0; $i < $len; $i++) {
+        for ($i = 0; $i < $len; ++$i) {
             $unique[$password[$i]]++;
         }
         if (count($unique) < $options["unique"]) {
