@@ -4,12 +4,34 @@ namespace duncan3dc\Helpers;
 
 class Debug
 {
+    /**
+     * Whether debugging is currently on or not
+     */
     protected static $on = false;
+
+    /**
+     * The time we started debugging
+     */
     protected static $time = 0;
+
+    /**
+     * The mode of the output (html/text)
+     */
     protected static $mode = "text";
+
+    /**
+     * The current indentation level of output
+     */
     protected static $indent = 0;
 
 
+    /**
+     * Turn debugging on (so any content is output)
+     *
+     * @param string The mode to output in
+     *
+     * @return void
+     */
     public static function on($mode = "text")
     {
         if (static::$on) {
@@ -21,6 +43,11 @@ class Debug
     }
 
 
+    /**
+     * Turn debugging of (so any content is not output)
+     *
+     * @return void
+     */
     public static function off()
     {
         static::$on = false;
@@ -28,12 +55,25 @@ class Debug
     }
 
 
+    /**
+     * Get the time elapsed since the we started debugging
+     *
+     * @return void
+     */
     protected static function getTime()
     {
         return number_format(microtime(true) - static::$time, 3);
     }
 
 
+    /**
+     * Output a message, in the current mode, if we are currently debugging
+     *
+     * @param string The message to output
+     * @param mixed Additional data to output
+     *
+     * @return void
+     */
     public static function output($message, $data = null)
     {
         if (static::$mode == "html") {
@@ -44,6 +84,11 @@ class Debug
     }
 
 
+    /**
+     * Output some indentation based on the current level
+     *
+     * @return void
+     */
     protected static function indent()
     {
         $char = (static::$mode == "html") ? "&nbsp;" : " ";
@@ -56,6 +101,14 @@ class Debug
     }
 
 
+    /**
+     * Output a message, in text mode, if we are currently debugging
+     *
+     * @param string The message to output
+     * @param mixed Additional data to output
+     *
+     * @return void
+     */
     public static function text($message, $data = null)
     {
         if (!static::$on) {
@@ -64,7 +117,7 @@ class Debug
 
         echo "--------------------------------------------------------------------------------\n";
         static::indent();
-        echo static::getTime() . " - " . $message . "\n";;
+        echo static::getTime() . " - " . $message . "\n";
         if (is_array($data)) {
             print_r($data);
         } elseif ($data) {
@@ -74,6 +127,14 @@ class Debug
     }
 
 
+    /**
+     * Output a message, in html mode, if we are currently debugging
+     *
+     * @param string The message to output
+     * @param mixed Additional data to output
+     *
+     * @return void
+     */
     public static function html($message, $data = null)
     {
         if (!static::$on) {
@@ -94,6 +155,14 @@ class Debug
     }
 
 
+    /**
+     * Output a start time, run a callable, then out the endtime
+     *
+     * @param string The message to output
+     * @param callable The function to execute
+     *
+     * @return void
+     */
     public static function call($message, callable $func)
     {
         $time = microtime(true);

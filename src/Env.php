@@ -4,12 +4,39 @@ namespace duncan3dc\Helpers;
 
 class Env
 {
+    /**
+     * For use with usePath() - Represents the apache document root
+     */
     const PATH_DOCUMENT_ROOT    =   701;
+
+    /**
+     * For use with usePath() - Represents the directory that the PHP_SELF filename is in
+     */
     const PATH_PHP_SELF         =   702;
+
+    /**
+     * For use with usePath() - Represents the parent of the vendor directory (commonly the project root)
+     */
     const PATH_VENDOR_PARENT    =   703;
+
+    /**
+     * @var string The root path to use
+     */
     protected static $path;
+
+    /**
+     * @var array Internal cache of environment variables
+     */
     protected static $vars;
 
+
+    /**
+     * Set the root path to use in the path methods.
+     *
+     * @param int|string Either one of the PATH class constants or an actual path to a directory that exists, and is readable
+     *
+     * @return void
+     */
     public static function usePath($path)
     {
         # Use the document root normally set via apache
@@ -44,6 +71,11 @@ class Env
     }
 
 
+    /**
+     * Get the root path, by default this is the parent directory of the composer vender directory.
+     *
+     * @return string
+     */
     public static function getPath()
     {
         if (!static::$path) {
@@ -58,6 +90,14 @@ class Env
     }
 
 
+    /**
+     * Get an absolute path for the specified relative path (relative to the currently used internal root path).
+     *
+     * @param string The relative path to append to the root path
+     * @param int|string Either one of the PATH class constants or an actual path to a directory that exists, and is readable
+     *
+     * @return string
+     */
     public static function path($append, $use = null)
     {
         $path = static::getPath();
@@ -80,6 +120,14 @@ class Env
     }
 
 
+    /**
+     * Get an absolute path for the specified relative path, convert symlinks to a canonical path, and check the path exists.
+     * This method is very similar to path() except the result is then run through php's standard realpath() function.
+     *
+     * @param string The relative path to append to the root path
+     *
+     * @return string
+     */
     public static function realpath($append)
     {
         $path = static::path($append);
@@ -87,6 +135,11 @@ class Env
     }
 
 
+    /**
+     * Get the current hostname from apache if this is mod_php otherwise the server's hostname.
+     *
+     * @return string
+     */
     public static function getHostName()
     {
         return Cache::call("hostname", function() {
@@ -102,6 +155,11 @@ class Env
     }
 
 
+    /**
+     * Get the current hostname of the machine.
+     *
+     * @return string
+     */
     public static function getMachineName()
     {
         return Cache::call("machine", function() {
@@ -110,6 +168,13 @@ class Env
     }
 
 
+    /**
+     * Get the revision number from the local git clone data.
+     *
+     * @param int The length of the revision hash to return
+     *
+     * @return string
+     */
     public static function getRevision($length = 10)
     {
         $revision = Cache::call("revision", function() {
@@ -143,6 +208,11 @@ class Env
     }
 
 
+    /**
+     * Get all defined environment variables.
+     *
+     * @return array
+     */
     public static function getVars()
     {
         if (!is_array(static::$vars)) {
@@ -161,6 +231,13 @@ class Env
     }
 
 
+    /**
+     * Get a specific environment variable, or null if it doesn't exist.
+     *
+     * @param string The name of the variable to retrieve
+     *
+     * @return mixed
+     */
     public static function getVar($var)
     {
         $vars = static::getVars();
@@ -173,6 +250,13 @@ class Env
     }
 
 
+    /**
+     * Get a specific environment variable, throw an exception if it doesn't exist.
+     *
+     * @param string The name of the variable to retrieve
+     *
+     * @return mixed
+     */
     public static function requireVar($var)
     {
         $vars = static::getVars();
@@ -185,6 +269,14 @@ class Env
     }
 
 
+    /**
+     * Override an environment variable.
+     *
+     * @param string The name of the variable to set
+     * @param string|int|boolean The value of the environment variable
+     *
+     * @return void
+     */
     public static function setVar($var, $value)
     {
         # Ensure the vars have been read from the disk
@@ -194,6 +286,11 @@ class Env
     }
 
 
+    /**
+     * Get the current useragent.
+     *
+     * @return string
+     */
     public static function getUserAgent()
     {
         if (empty($_SERVER["USER_AGENT"])) {

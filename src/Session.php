@@ -4,23 +4,48 @@ namespace duncan3dc\Helpers;
 
 class Session
 {
-    protected static $active = false;
+    /**
+     * @var bool Whether the session has been started or not.
+     */
+    protected static $init = false;
+
+    /**
+     * @var string The name of the session.
+     */
     protected static $name = "";
+
+    /**
+     * @var array The cache of the session data.
+     */
     protected static $data = [];
 
 
+    /**
+     * Set the name of the session to use.
+     *
+     * @param string The name of the session
+     *
+     * @return void
+     */
     public static function name($name)
     {
+        static::$init = null;
         static::$name = $name;
         static::$data = [];
     }
 
 
-    public static function start($name = null)
+    /**
+     * Ensure the session data is loaded into cache.
+     *
+     * @return void
+     */
+    protected static function init()
     {
-        if ($name) {
-            static::name($name);
+        if (static::$init) {
+            return;
         }
+        static::$init = true;
 
         if (!static::$name) {
             throw new \Exception("Cannot start session, no name has been specified");
@@ -37,22 +62,22 @@ class Session
 
         # Remove the lock from the session file
         session_write_close();
-
-        static::$active = true;
     }
 
 
     /**
-     * Whenever a key is read from session data, just get it from cache
+     * Get a value from the session data cache.
+     *
+     * @param string The name of the name to retrieve
+     *
+     * @return mixed
      */
     public static function get($key)
     {
-        if (!static::$active) {
-            static::start();
-        }
+        static::init();
 
         if (!array_key_exists($key, static::$data)) {
-            return false;
+            return;
         }
 
         return static::$data[$key];
@@ -60,16 +85,16 @@ class Session
 
 
     /**
-     * Whenever a key is set, we need to start the session up again to store it
-     * When session_start is called it attempts to send the cookie to the browser with the session id in.
-     * However if some output has already been sent then this will fail, this is why we suppress errors on the call here
-     * This is safe because we sent the cookie when the start() method was called
+     * Set a value within session data.
+     *
+     * @param string|array Either the name of the session key to update, or an array of keys to update
+     * @param mixed If $data is a string then store this value in the session data
+     *
+     * @return void
      */
     public static function set($data, $value = null)
     {
-        if (!static::$active) {
-            static::start();
-        }
+        static::init();
 
         # Check that at least one value has been changed before starting up the sesson
         $changed = false;
@@ -88,9 +113,14 @@ class Session
 
         # If none of the values have changed then don't write to session data
         if (!$changed) {
-            return false;
+            return;
         }
 
+        /**
+         * Whenever a key is set, we need to start the session up again to store it
+         * When session_start is called it attempts to send the cookie to the browser with the session id in.
+         * However if some output has already been sent then this will fail, this is why we suppress errors on the call here
+         */
         @session_start();
 
         if (is_array($data)) {
@@ -104,19 +134,25 @@ class Session
         static::$data = $_SESSION;
 
         session_write_close();
-
-        return true;
     }
 
 
     /**
-     * This is a convenience method to prevent having to do several checks/set for all persistant variables
+     * This is a convenience method to prevent having to do several checks/set for all persistant variables.
+     * If the key name has been passed via POST then that value is stored in the session and returned.
+     * If the key name has been passed via GET then that value is stored in the session and returned.
+     * If there is already a value in the session data then that is returned.
+     * If all else fails then the default value is returned.
+     * All checks are truthy/falsy (so a POST value of "0" is ignored).
+     *
+     * @param string The name of the key to retrieve from session data
+     * @param mixed The value to use if the current session value is falsy
+     *
+     * @return mixed
      */
     public static function getSet($key, $default = null)
     {
-        if (!static::$active) {
-            static::start();
-        }
+        static::init();
 
         # If this key was just submitted via post then store it in the session data
         if (isset($_POST[$key]) && $val = $_POST[$key]) {
@@ -144,7 +180,9 @@ class Session
 
 
     /**
-     * Destroy the session and all it's data
+     * Tear down the session and wipe all it's data.
+     *
+     * @return void
      */
     public static function destroy()
     {
@@ -156,7 +194,7 @@ class Session
 
         session_destroy();
 
-        static::$active = false;
-        static::$data = [];
+        # Reset the session data
+        static::name(static::$name);
     }
 }

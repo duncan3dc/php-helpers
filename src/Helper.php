@@ -6,9 +6,14 @@ class Helper
 {
 
     /**
-     * Simulate named arguments using associative arrays
-     * Basically just merge the two arrays, giving user specified options the preference
-     * Also ensures that each paramater in the user array is valid
+     * Simulate named arguments using associative arrays.
+     * Basically just merge the two arrays, giving user specified options the preference.
+     * Also ensures that each paramater in the user array is valid and throws an exception if an unknown element is found.
+     *
+     * @param array The array of options passed to the function call
+     * @param array The default options to be used
+     *
+     * @return array
      */
     public static function getOptions($userSpecified, $defaults)
     {
@@ -26,8 +31,13 @@ class Helper
 
 
     /**
-     * This is a safe version of the getOptions() method
-     * It allows any custom option key in the userSpecified array
+     * This is a safe version of the getOptions() method.
+     * It allows any custom option key in the userSpecified array.
+     *
+     * @param array The array of options passed to the function call
+     * @param array The default options to be used
+     *
+     * @return array
      */
     public static function getAnyOptions($userSpecified, $defaults)
     {
@@ -43,7 +53,11 @@ class Helper
 
 
     /**
-     * Ensure that the passed parameter is a string, or an array of strings
+     * Ensure that the passed parameter is a string, or an array of strings.
+     *
+     * @param mixed The value to convert to a string
+     *
+     * @return string|string[]
      */
     public static function toString($data)
     {
@@ -62,9 +76,14 @@ class Helper
 
 
     /**
-     * Ensure that the passed parameter is an array
+     * Ensure that the passed parameter is an array.
+     * If it is a truthy value then make it the sole element of an array.
+     *
+     * @param mixed The value to convert to an array
+     *
+     * @return array
      */
-    public static function toArray($value = null)
+    public static function toArray($value)
     {
         # If it's already an array then just pass it back
         if (is_array($value)) {
@@ -83,6 +102,13 @@ class Helper
     }
 
 
+    /**
+     * Run each element value through trim() and remove any elements that are falsy.
+     *
+     * @param array The array to cleanup
+     *
+     * @return array
+     */
     public static function cleanupArray($array)
     {
         $newArray = [];
@@ -107,6 +133,16 @@ class Helper
     }
 
 
+    /**
+     * Extension to the standard date() function to handle many more formats.
+     * Returns zero if any step of the parsing fails.
+     *
+     * @param string The format to apply to the date
+     * @param string|int The date to parse
+     * @param string|int The time to parse
+     *
+     * @return int|string
+     */
     public static function date($format, $date, $time = null)
     {
         if (!$date = trim($date)) {
@@ -223,6 +259,15 @@ class Helper
     }
 
 
+    /**
+     * Compare two dates and return an integer representing their difference in days.
+     * Returns null if any of the parsing fails.
+     *
+     * @param string|int The first date to parse
+     * @param string|int The second date to parse
+     *
+     * @return int|null
+     */
     public static function dateDiff($from, $to = null)
     {
         if (!$to) {
@@ -231,11 +276,11 @@ class Helper
         }
 
         if (!$dateFrom = static::date("U", $from)) {
-            return false;
+            return;
         }
 
         if (!$dateTo = static::date("U", $to)) {
-            return false;
+            return;
         }
 
         $diff = $dateTo - $dateFrom;
@@ -245,6 +290,14 @@ class Helper
     }
 
 
+    /**
+     * Append parameters on a url (adding a question mark if none is present).
+     *
+     * @param string The base url
+     * @param array An array of parameters to append
+     *
+     * @return string
+     */
     public static function url($url, $params = null)
     {
         if (!is_array($params) || count($params) < 1) {
@@ -272,6 +325,19 @@ class Helper
     }
 
 
+    /**
+     * Calculate the most reasonable divisor for a total.
+     * Useful for repeating headers in a table with many rows.
+     *
+     * $options:
+     * - int "min" The minimum number of rows to allow before breaking (default: 5)
+     * - int "max" The maximum number of rows to allow before breaking (default: 10)
+     *
+     * @param int The total number to calculate from (eg, total number of rows in a table)
+     * @param array An array of options (see above)
+     *
+     * @return int
+     */
     public static function getBestDivisor($rows, $options = null)
     {
         $options = static::getOptions($options, [
@@ -310,15 +376,31 @@ class Helper
     }
 
 
+    /**
+     * Generate a password.
+     *
+     * $options:
+     * - array "bad" Characters that should not be used as they are ambigious (default: [1, l, I, 5, S, 0, O, o])
+     * - array "exclude" Other characters that should not be used (default: [])
+     * - int "length" The length of the password that should be generated (default: 10)
+     * - bool "lowercase" Include lowercase letters (default: true)
+     * - bool "uppercase" Include uppercase letters (default: true)
+     * - bool "numbers" Include numbers (default: true)
+     * - bool "specialchars" Include special characters (default: true)
+     *
+     * @param array An array of options (see above)
+     *
+     * @return string
+     */
     public static function createPassword($options = null)
     {
         $options = static::getOptions($options, [
-            "bad"       =>  ["1", "l", "I", "5", "S", "0", "O", "o"],
-            "exclude"   =>  [],
-            "length"    =>  10,
-            "lowercase" =>  true,
-            "uppercase" =>  true,
-            "numbers"   =>  true,
+            "bad"           =>  ["1", "l", "I", "5", "S", "0", "O", "o"],
+            "exclude"       =>  [],
+            "length"        =>  10,
+            "lowercase"     =>  true,
+            "uppercase"     =>  true,
+            "numbers"       =>  true,
             "specialchars"  =>  true,
         ]);
 
@@ -388,9 +470,22 @@ class Helper
 
 
     /**
-     * Check if a password conforms to the specificed complexitiy rules
-     * If the password passes all tests then the function returns an empty array
-     * Otherwise it returns an array of all the checks that failed
+     * Check if a password conforms to the specified complexitiy rules.
+     * If the password passes all tests then the function returns an empty array.
+     * Otherwise it returns an array of all the checks that failed.
+     *
+     * $options:
+     * - int "length" The minimum length the password must be (default: 8)
+     * - int "unique" The number of unique characters the password must contain (default: 4)
+     * - bool "lowercase" Whether the password must contain lowercase letters (default: true)
+     * - bool "uppercase" Whether the password must contain uppercase letters (default: true)
+     * - bool "alpha" Whether the password must contain letters (default: true)
+     * - bool "numbers" Whether the password must contain numbers (default: true)
+     *
+     * @param string The password to check
+     * @param array An array of options (see above)
+     *
+     * @return string[]
      */
     public static function checkPassword($password, $options = null)
     {
@@ -434,6 +529,30 @@ class Helper
     }
 
 
+
+    /**
+     * Simple wrapper for curl.
+     *
+     * $options:
+     * - string "url" The url to request
+     * - array "headers" An array of key/value pairs of headers to send
+     * - int "connect" CURLOPT_CONNECTTIMEOUT (default: 0)
+     * - int "timeout" CURLOPT_TIMEOUT (default: 0)
+     * - bool "follow" CURLOPT_FOLLOWLOCATION (default: true)
+     * - bool "verifyssl" CURLOPT_SSL_VERIFYPEER (default: true)
+     * - string "cookies" The file to use for both CURLOPT_COOKIEFILE and CURLOPT_COOKIEJAR
+     * - bool "put" Set to try to send the $body parameter as the contents of a put request
+     * - string "custom" CURLOPT_CUSTOMREQUEST
+     * - bool "nobody" CURLOPT_NOBODY
+     * - string "useragent" CURLOPT_USERAGENT
+     * - bool "returnheaders" CURLOPT_HEADER (default: false)
+     * - array "curlopts" Any extra curlopt constants (as the keys) and the values to use (as the values)
+     *
+     * @param string|array Can either be a url to use with the default options, or an array of options (see above)
+     * @param string|array Content to send in the body of the request, if an array is passed it will be run through http_build_query()
+     *
+     * @return string|array If "returnheaders" is false then the body of the response is returned as a string, otherwise an array of data about the response is available
+     */
     public static function curl($options, $body = null)
     {
         # If the options weren't passed as an array then it is just a simple url request
@@ -442,13 +561,13 @@ class Helper
         }
 
         $options = Helper::getOptions($options, [
-            "url"           =>  false,
-            "headers"       =>  false,
+            "url"           =>  null,
+            "headers"       =>  null,
             "connect"       =>  0,
             "timeout"       =>  0,
             "follow"        =>  true,
             "verifyssl"     =>  true,
-            "cookies"       =>  false,
+            "cookies"       =>  null,
             "put"           =>  false,
             "custom"        =>  false,
             "nobody"        =>  false,

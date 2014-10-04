@@ -5,7 +5,16 @@ namespace duncan3dc\Helpers;
 class Image
 {
 
-
+    /**
+     * Get the extension of image file from disk.
+     * Only supports png/jpg/gif.
+     * Optionally pass an acceptable extension (or array of extensions).
+     *
+     * @param string The fully qualified path to the file
+     * @param string|array Acceptable extensions
+     *
+     * @return string|null
+     */
     public static function getExtension($path, $extensions = null)
     {
         $format = exif_imagetype($path);
@@ -14,6 +23,16 @@ class Image
     }
 
 
+    /**
+     * Get the extension of a type identifier (either a imagetype constant or a mimetype).
+     * Only supports png/jpg/gif.
+     * Optionally pass an acceptable extension (or array of extensions).
+     *
+     * @param int|string Either an imagetype constant or a mimetype string
+     * @param string|array Acceptable extensions
+     *
+     * @return string|null
+     */
     public static function getFormatExtension($format, $extensions = null)
     {
         switch ($format) {
@@ -36,13 +55,13 @@ class Image
                 break;
 
             default:
-                return false;
+                return;
         }
 
         if ($extensions) {
             $extensions = Helper::toArray($extensions);
             if (!in_array($ext, $extensions)) {
-                return false;
+                return;
             }
         }
 
@@ -50,6 +69,13 @@ class Image
     }
 
 
+    /**
+     * Get the date/time an image was taken (using exif data).
+     *
+     * @param string The path to the image file, if it starts with a forward slash then an absolute path is assumed, otherwise it is relative to the document root
+     *
+     * @return int|null Unix timestamp
+     */
     public static function getDate($path)
     {
         if ($path[0] != "/") {
@@ -57,50 +83,64 @@ class Image
         }
 
         if (!$exif = exif_read_data($path)) {
-            return false;
+            return;
         }
 
         if (!$date = strtotime($exif["DateTime"])) {
-            return false;
+            return;
         }
 
         return $date;
     }
 
 
+    /**
+     * Resize an image, maintaining the same aspect ratio.
+     * If the image is already an appropriate size then it is just copied.
+     *
+     * $options:
+     * - string "fromPath" The path of the current image file
+     * - string "toPath" The path to save the resized image to
+     * - int "width" The maximum width that the image can be
+     * - int "height" The maximum height that the image can be
+     *
+     * @param array An array of options (see above)
+     *
+     * @return null
+     */
     public static function resize($options = null)
     {
         $options = Helper::getOptions($options, [
-            "fromPath"  =>  false,
-            "toPath"    =>  false,
-            "maxWidth"  =>  false,
-            "maxHeight" =>  false,
+            "fromPath"  =>  null,
+            "toPath"    =>  null,
+            "width"     =>  null,
+            "height"    =>  null,
         ]);
 
         if (!$fromPath = trim($options["fromPath"])) {
-            return false;
+            throw new \Exception("No from path specified to read from");
         }
         if (!$toPath = trim($options["toPath"])) {
-            return false;
+            throw new \Exception("No to path specified to save to");
         }
-        $maxWidth = round($options["maxWidth"]);
-        $maxHeight = round($options["maxHeight"]);
+        $maxWidth = round($options["width"]);
+        $maxHeight = round($options["height"]);
 
         list($width, $height, $format) = getimagesize($fromPath);
 
         if ($width < 1 || $height < 1) {
             copy($fromPath, $toPath);
-            return false;
+            return;
         }
 
         if ($maxWidth < 1 && $maxHeight < 1) {
             copy($fromPath, $toPath);
-            return false;
+            return;
         }
 
         if ($width < $maxWidth && $height < $maxHeight) {
             copy($fromPath, $toPath);
-            return false;
+            return;
         }
 
         $newWidth = $width;
@@ -118,9 +158,7 @@ class Image
             $newHeight = $newWidth * $ratio;
         }
 
-        if (!$image = static::create($fromPath, $format)) {
-            return false;
-        }
+        $image = static::create($fromPath, $format);
         $newImage = imagecreatetruecolor($newWidth, $newHeight);
 
         if ($format != IMAGETYPE_JPEG) {
@@ -135,24 +173,32 @@ class Image
 
         imagedestroy($image);
         imagedestroy($newImage);
-
-        return true;
     }
 
 
     /**
-     * Automatically resize and create images on the fly
-     * If the image already exists then it's path is just passed back
-     * A max width/height can be specified to resize the image to
+     * Automatically resize and create images on the fly.
+     * If the image already exists then it's path is just passed back.
+     *
+     * $options:
+     * - string "path" The path that the images reside in (default: "images/img")
+     * - string "basename" The filename, without extension, of the image, the extension will be automatically established and appended
+     * - string "filename" The filename, including extension, of the image. Either this or "basename" must be set
+     * - int "width" The maximum width that the image can be, if the image is wider it will be resized (maintaining the same aspect ratio)
+     * - int "height" The maximum height that the image can be, if the image is taller it will be resized (maintaining the same aspect ratio)
+     *
+     * @param array An array of options (see above)
+     *
+     * @return string
      */
     public static function img($options = null)
     {
         $options = Helper::getOptions($options, [
             "path"      =>  "images/img",
-            "basename"  =>  false,
-            "filename"  =>  false,
-            "width"     =>  false,
-            "height"    =>  false,
+            "basename"  =>  null,
+            "filename"  =>  null,
+            "width"     =>  null,
+            "height"    =>  null,
         ]);
 
         $path = $options["path"];
@@ -175,12 +221,12 @@ class Image
         }
 
         if (!$filename) {
-            return false;
+            throw new \Exception("No image filename provided to use");
         }
 
         $original = $fullpath . "/original/" . $filename;
         if (!file_exists($original)) {
-            return false;
+            throw new \Exception("Original image file does not exist (" . $original . ")");
         }
 
         $w = $options["width"];
@@ -213,47 +259,85 @@ class Image
         static::resize([
             "fromPath"  =>  $original,
             "toPath"    =>  $newfile,
-            "maxWidth"  =>  $w,
-            "maxHeight" =>  $h,
+            "width"     =>  $w,
+            "height"    =>  $h,
         ]);
 
         return $newpath;
     }
 
 
+    /**
+     * Create an image resource from an image on disk.
+     *
+     * @param string The path to load the image from
+     * @param int Image type constant (http://php.net/manual/en/image.constants.php)
+     *
+     * @return resource
+     */
     public static function create($path, $format)
     {
         switch ($format) {
             case IMAGETYPE_JPEG:
-                return imagecreatefromjpeg($path);
+                $result = imagecreatefromjpeg($path);
+                break;
             case IMAGETYPE_PNG:
-                return imagecreatefrompng($path);
+                $result = imagecreatefrompng($path);
+                break;
             case IMAGETYPE_GIF:
-                return imagecreatefromgif($path);
+                $result = imagecreatefromgif($path);
+                break;
         }
 
-        return false;
+        if (!$result) {
+            throw new \Exception("Failing to create image (" . $path . ")");
+        }
+
+        return $result;
     }
 
 
+    /**
+     * Save an image resource to the disk.
+     *
+     * @param resource The image resource to save
+     * @param string The path to save the image too
+     * @param int Image type constant (http://php.net/manual/en/image.constants.php)
+     *
+     * @return void
+     */
     public static function save($image, $path, $format)
     {
         switch ($format) {
             case IMAGETYPE_JPEG:
-                return imagejpeg($image, $path, 100);
+                $result = imagejpeg($image, $path, 100);
+                break;
             case IMAGETYPE_PNG:
-                return imagepng($image, $path, 9);
+                $result = imagepng($image, $path, 9);
+                break;
             case IMAGETYPE_GIF:
-                return imagegif($image, $path);
+                $result = imagegif($image, $path);
+                break;
         }
 
-        return false;
+        if (!$result) {
+            throw new \Exception("Failed to save image (" . $path . ")");
+        }
     }
 
 
+    /**
+     * Rotate an image and save it.
+     * If no angle to rotate is passed then we attempt to read it from exif data.
+     *
+     * @param string The path of the image to work with, and overwrite
+     * @param int A specific rotation angle to apply (clockwise)
+     *
+     * @return void
+     */
     public static function rotate($path, $rotate = null)
     {
-        if ($rotate === false) {
+        if ($rotate === null) {
             $exif = exif_read_data($path);
             switch ($exif["Orientation"]) {
                 case 3:
@@ -268,19 +352,15 @@ class Image
             }
         }
         if (!$rotate) {
-            return false;
+            return;
         }
 
         $format = getimagesize($path)[2];
 
-        if (!$image = static::create($path, $format)) {
-            return false;
-        }
+        $image = static::create($path, $format);
 
         $rotate = imagerotate($image, $rotate * -1, 0);
 
         static::save($rotate, $path, $format);
-
-        return true;
     }
 }

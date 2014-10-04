@@ -4,9 +4,19 @@ namespace duncan3dc\Helpers;
 
 class CacheInstance
 {
+    /**
+     * @var array Internal storage of cached data
+     */
     private $data = [];
 
 
+    /**
+     * Check if the specified key has already been cached.
+     *
+     * @param string The key of the cached data
+     *
+     * @return boolean
+     */
     public function check($key)
     {
         if (array_key_exists($key, $this->data)) {
@@ -17,6 +27,13 @@ class CacheInstance
     }
 
 
+    /**
+     * Get the stored value of the specified key.
+     *
+     * @param string The key of the cached data
+     *
+     * @return mixed
+     */
     public function get($key)
     {
         if (!$this->check($key)) {
@@ -26,33 +43,53 @@ class CacheInstance
     }
 
 
-    public function set($key, $val)
+    /**
+     * Set the specified key to the specified value.
+     *
+     * @param string The key of the cached data
+     * @param string The value to storage against the key
+     *
+     * @return void
+     */
+    public function set($key, $value)
     {
-        $this->data[$key] = $val;
-
-        return true;
+        $this->data[$key] = $value;
     }
 
 
+    /**
+     * Clear a key within the cache data, or call without an argument to clear all the cached data.
+     *
+     * @param string The key of the cached data
+     *
+     * @return void
+     */
     public function clear($key = null)
     {
-        if ($key) {
+        if (isset($key)) {
             if (isset($this->data[$key])) {
                 unset($this->data[$key]);
             }
         } else {
             $this->data = [];
         }
-
-        return true;
     }
 
 
-    public function call($key, $func = null)
+    /**
+     * Convience method to retrieve a value if it's cached, or run the callback and cache the data now if not.
+     * The key parameter is optional, just a callback can be passed. If so the calling class/method will be used as the cache key.
+     *
+     * @param string The key of the cached data
+     * @param callable A function to call that will return the value to cache
+     *
+     * @return mixed
+     */
+    public function call($key, callable $func = null)
     {
         if (!$func) {
             $func = $key;
-            $key = false;
+            $key = null;
 
             $trace = debug_backtrace();
             if ($function = $trace[1]["function"]) {

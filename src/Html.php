@@ -5,26 +5,28 @@ namespace duncan3dc\Helpers;
 class Html
 {
 
-    #public static function print_r($data, $return = null)
-    public static function printr($data, $return = null)
-    {
-        $output = "<pre>" . print_r($data, true) . "</pre>";
-
-        if ($return) {
-            return $output;
-        }
-
-        echo $output;
-    }
-
-
+    /**
+     * Format a number as price.
+     *
+     * $options:
+     * - string "class" The css class to apply to the element if the number is negative (default: "red")
+     * - string "currency" The currency code that the price is in (use Html::getCurrencies() to get supported currency codes)
+     * - string "symbol" Instead of a currency a symbol can be provided directly (default: "£")
+     * - string "symbolp" The same as symbol except it is added after the price, not before it
+     * - int "decimalPlaces" The number of decimal places the price should show (default: 2)
+     *
+     * @param int|float The number to format
+     * @param array An array of options (see above)
+     *
+     * @return string
+     */
     public static function price($val, $options = null)
     {
         $options = Helper::getOptions($options, [
-            "class"     =>  "red",
-            "currency"  =>  false,
-            "symbol"    =>  "£",
-            "symbolp"   =>  "",
+            "class"         =>  "red",
+            "currency"      =>  null,
+            "symbol"        =>  "£",
+            "symbolp"       =>  "",
             "decimalPlaces" =>  2,
         ]);
 
@@ -67,6 +69,13 @@ class Html
     }
 
 
+    /**
+     * Get the currencies supported by the Html class methods.
+     *
+     * @param boolean Whether to return a multi-dimensional array with the symbols of a currency, or just the currency codes and their names
+     *
+     * @return array Keyed by the currency code, value depends on the $symbols parameter
+     */
     public static function getCurrencies($symbols = null)
     {
         $currencies = [
@@ -125,6 +134,19 @@ class Html
     }
 
 
+    /**
+     * Format a string in a human readable way.
+     * Typically used for converting "safe" strings like "section_title" to user displayable strings like "Section Title"
+     *
+     * $options:
+     * - string "underscores" Convert underscores to spaces (default: true)
+     * - string "ucwords" Run the string through ucwords (default: true)
+     *
+     * @param string The string to format
+     * @param array An array of options (see above)
+     *
+     * @return string
+     */
     public static function formatKey($key, $options = null)
     {
         $options = Helper::getOptions($options, [
@@ -144,6 +166,17 @@ class Html
     }
 
 
+    /**
+     * Trim a string, and return an alternative if it is falsey.
+     *
+     * $options:
+     * - string "alt" The string that should be returned if the input is falsey (default: "n/a")
+     *
+     * @param string The string to format
+     * @param array An array of options (see above)
+     *
+     * @return string
+     */
     public static function string($string, $options = null)
     {
         $options = Helper::getOptions($options, [
@@ -160,6 +193,21 @@ class Html
     }
 
 
+    /**
+     * Limit a string to a maximum length.
+     *
+     * $options:
+     * - int "length" The maximum length that the string can be (default: 30)
+     * - int "extra" The extra length that is acceptable, while aiming for the above length (default: 0)
+     * - string "alt" The string that should be returned if the input is falsey (default: "n/a")
+     * - bool "words" Set to true to never break in the middle of a word (default: true)
+     * - string "suffix" The string that should be appended if the input has been shortened (default: "...")
+     *
+     * @param string The string to limit
+     * @param array An array of options (see above)
+     *
+     * @return string
+     */
     public static function stringLimit($string, $options = null)
     {
         $options = Helper::getOptions($options, [
@@ -197,6 +245,19 @@ class Html
     }
 
 
+    /**
+     * Parse a date in the same way as Helper::date() except return a string on failure.
+     *
+     * $options:
+     * - string "alt" The string that should be returned if Helper::date() returns 0 (default: "n/a")
+     *
+     * @param string The format to apply to the date
+     * @param string|int The date to parse
+     * @param string|int The time to parse
+     * @param array An array of options (see above)
+     *
+     * @return string
+     */
     public static function date($format, $date, $time = null, $options = null)
     {
         $options = Helper::getOptions($options, [
@@ -213,6 +274,13 @@ class Html
     }
 
 
+    /**
+     * Convert a date into a textual string described the date/time relative to now.
+     *
+     * @param string|int The date to parse
+     *
+     * @return string
+     */
     public static function textDate($date)
     {
         $date = Helper::date("U", $date);
@@ -311,6 +379,14 @@ class Html
     }
 
 
+    /**
+     * Wrapper for htmlentities() with default options.
+     * Identical to calling htmlentities($string, ENT_QUOTES, "UTF-8")
+     *
+     * @param string The string to convert the entities from
+     *
+     * @return string
+     */
     public static function entities($string)
     {
         return htmlentities($string, ENT_QUOTES, "UTF-8");
@@ -319,6 +395,10 @@ class Html
 
     /**
      * Take a number of seconds and convert it to the relevant units (seconds, minutes, hours, etc)
+     *
+     * @param int The number of seconds
+     *
+     * @return string
      */
     public static function time($seconds)
     {
@@ -363,6 +443,12 @@ class Html
 
     /**
      * Take an integer and a word and output it with it's appropriate plural suffix, if required
+     *
+     * @param int The number of the $word
+     * @param string The word
+     * @param string The text to append to $word if there are multiple (or zero)
+     *
+     * @return string
      */
     public static function plural($int, $word, $plural = "s")
     {
@@ -376,6 +462,14 @@ class Html
     }
 
 
+    /**
+     * Send a location header.
+     * Then kill the script, incase some output has already been output, we don't want the page to carry on outputing for security reasons.
+     *
+     * @param string The url to redirect to
+     *
+     * @return void
+     */
     public static function redirect($url)
     {
         header("location: " . $url);

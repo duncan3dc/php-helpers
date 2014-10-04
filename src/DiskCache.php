@@ -4,10 +4,20 @@ namespace duncan3dc\Helpers;
 
 class DiskCache
 {
+    /**
+     * @var string The base path to use for cache storage
+     */
     public static $path = "/tmp/cache";
 
 
-    protected static function path($filename)
+    /**
+     * Generate the fullpath to the cache file based on the passed filename.
+     *
+     * @param string The filename specified to store the cache in
+     *
+     * @return string
+     */
+    public static function path($filename)
     {
         if ($filename[0] != "/") {
             $filename = static::$path . "/" . $filename;
@@ -22,7 +32,7 @@ class DiskCache
         # Ensure the cache directory exists
         if (!is_dir($path)) {
             if (!mkdir($path, 0775, true)) {
-                return false;
+                throw new \Exception("Unable to create cache directory (" . $path . ")");
             }
         }
 
@@ -30,24 +40,40 @@ class DiskCache
     }
 
 
+    /**
+     * Check if the specified key has already been cached.
+     * If it has been cached then the time the cached data was last modified is returned.
+     *
+     * @param string The key of the cached data
+     *
+     * @return int|null
+     */
     public static function check($filename)
     {
         if (!$filename = static::path($filename)) {
-            return false;
+            return null;
         }
 
         if (!file_exists($filename)) {
-            return false;
+            return null;
         }
 
         return filemtime($filename);
     }
 
 
+    /**
+     * Get the stored value of the specified key.
+     *
+     * @param string The key of the cached data
+     * @param int The number of minutes to use the cache for, if the cache is present but older than this time then return null
+     *
+     * @return mixed
+     */
     public static function get($filename, $mins = 0)
     {
         if (!$cache = static::check($filename)) {
-            return false;
+            return null;
         }
 
         $limit = time() - ($mins * 60);
@@ -58,36 +84,54 @@ class DiskCache
             return $return;
         }
 
-        return false;
+        return null;
     }
 
 
+    /**
+     * Set the specified key to the specified value.
+     *
+     * @param string The key of the cached data
+     * @param string The value to storage against the key, this data must be JSON serializable
+     *
+     * @return void
+     */
     public static function set($filename, $data)
     {
-        if (!$filename = static::path($filename)) {
-            return false;
-        }
-
+        $filename = static::path($filename);
         Json::encodeToFile($filename, $data);
-
-        return true;
     }
 
 
+    /**
+     * Clear a key within the cache data.
+     *
+     * @param string The key of the cached data
+     *
+     * @return void
+     */
     public static function clear($filename)
     {
-        if (!$filename = static::path($filename)) {
-            return true;
+        $filename = static::path($filename);
+
+        if (!file_exists($filename)) {
+            return;
         }
 
-        if (file_exists($filename)) {
-            return unlink($filename);
+        if (unlink($filename)) {
+            throw new \Exception("Unable to delete file (" . $filename . ")");
         }
-
-        return true;
     }
 
 
+    /**
+     * Convience method to retrieve a value if it's cached, or run the callback and cache the data now if not.
+     *
+     * @param string The key of the cached data
+     * @param callable A function to call that will return the value to cache
+     *
+     * @return mixed
+     */
     public static function call($key, callable $func)
     {
         $trace = debug_backtrace();
