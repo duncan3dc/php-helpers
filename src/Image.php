@@ -86,6 +86,10 @@ class Image
             return;
         }
 
+        if (empty($exif["DateTime"])) {
+            return;
+        }
+
         if (!$date = strtotime($exif["DateTime"])) {
             return;
         }
