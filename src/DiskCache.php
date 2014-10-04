@@ -118,7 +118,7 @@ class DiskCache
             return;
         }
 
-        if (unlink($filename)) {
+        if (!unlink($filename)) {
             throw new \Exception("Unable to delete file (" . $filename . ")");
         }
     }

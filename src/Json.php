@@ -122,7 +122,7 @@ class Json
             mkdir($directory, 0775, true);
         }
 
-        if (!file_put_contents($path, $json)) {
+        if (file_put_contents($path, $json) === false) {
             throw new \Exception("Failed to write the file (" . $path . ")");
         }
     }
