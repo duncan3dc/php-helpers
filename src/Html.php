@@ -2,6 +2,8 @@
 
 namespace duncan3dc\Helpers;
 
+use duncan3dc\Serial\Yaml;
+
 class Html
 {
 
@@ -78,48 +80,18 @@ class Html
      */
     public static function getCurrencies($symbols = null)
     {
-        $currencies = [
-            "GBP"   =>  [
-                "title"     =>  "Pound Sterling",
-                "prefix"    =>  "£",
-                "suffix"    =>  "",
-            ],
-            "EUR"   =>  [
-                "title"     =>  "Euro",
-                "prefix"    =>  "€",
-                "suffix"    =>  "",
-            ],
-            "USD"   =>  [
-                "title"     =>  "US Dollar",
-                "prefix"    =>  "$",
-                "suffix"    =>  "",
-            ],
-            "CZK"   =>  [
-                "title"     =>  "Czech Koruna",
-                "prefix"    =>  "",
-                "suffix"    =>  "Kč",
-            ],
-            "PLN"   =>  [
-                "title"     =>  "Polish Złoty",
-                "prefix"    =>  "",
-                "suffix"    =>  "zł",
-            ],
-            "SEK"   =>  [
-                "title"     =>  "Swedish Krona",
-                "prefix"    =>  "",
-                "suffix"    =>  "kr",
-            ],
-            "RUB"   =>  [
-                "title"     =>  "Russia Ruble",
-                "prefix"    =>  "Р",
-                "suffix"    =>  "",
-            ],
-            "ILS"   =>  [
-                "title"     =>  "Israeli shekel",
-                "prefix"    =>  "₪",
-                "suffix"    =>  "",
-            ],
-        ];
+        $currencies = Cache::call("get-currencies", function() {
+            $currencies = Yaml::decodeFromFile(__DIR__ . "/../data/currencies.yml");
+            return array_map(function($data) {
+                if (!isset($data["prefix"])) {
+                    $data["prefix"] = "";
+                }
+                if (!isset($data["suffix"])) {
+                    $data["suffix"] = "";
+                }
+                return $data;
+            }, $currencies);
+        });
 
         if ($symbols) {
             return $currencies;

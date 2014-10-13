@@ -1,0 +1,31 @@
+GBP:
+    title: Pound Sterling
+    prefix: £
+
+EUR:
+    title: Euro
+    prefix: €
+
+USD:
+    title: US Dollar
+    prefix: $
+
+CZK:
+    title: Czech Koruna
+    suffix: Kč
+
+PLN:
+    title: Polish Złoty
+    suffix: zł
+
+SEK:
+    title: Swedish Krona
+    suffix: kr
+
+RUB:
+    title: Russia Ruble
+    prefix: Р
+
+ILS:
+    title: Israeli shekel
+    prefix: ₪
