@@ -29,3 +29,7 @@ RUB:
 ILS:
     title: Israeli shekel
     prefix: ₪
+
+DKK:
+    title: Danish krone
+    suffix: kr
