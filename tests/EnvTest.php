@@ -2,6 +2,8 @@
 
 namespace duncan3dc\Helpers;
 
+use duncan3dc\Serial\Json;
+
 class EnvTest extends \PHPUnit_Framework_TestCase
 {
     protected $path;
