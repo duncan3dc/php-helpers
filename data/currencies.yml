@@ -33,3 +33,7 @@ ILS:
 DKK:
     title: Danish krone
     suffix: kr
+
+CHF:
+    title: Swiss franc
+    prefix: CHF
