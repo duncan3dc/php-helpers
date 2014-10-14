@@ -14,24 +14,24 @@ CZK:
     title: Czech Koruna
     suffix: Kč
 
-PLN:
-    title: Polish Złoty
-    suffix: zł
-
-SEK:
-    title: Swedish Krona
+DKK:
+    title: Danish krone
     suffix: kr
-
-RUB:
-    title: Russia Ruble
-    prefix: Р
 
 ILS:
     title: Israeli shekel
     prefix: ₪
 
-DKK:
-    title: Danish krone
+PLN:
+    title: Polish Złoty
+    suffix: zł
+
+RUB:
+    title: Russia Ruble
+    prefix: Р
+
+SEK:
+    title: Swedish Krona
     suffix: kr
 
 CHF:
