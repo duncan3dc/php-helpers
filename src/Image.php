@@ -10,8 +10,8 @@ class Image
      * Only supports png/jpg/gif.
      * Optionally pass an acceptable extension (or array of extensions).
      *
-     * @param string The fully qualified path to the file
-     * @param string|array Acceptable extensions
+     * @param string $path The fully qualified path to the file
+     * @param string|array $extensions Acceptable extensions
      *
      * @return string|null
      */
@@ -28,8 +28,8 @@ class Image
      * Only supports png/jpg/gif.
      * Optionally pass an acceptable extension (or array of extensions).
      *
-     * @param int|string Either an imagetype constant or a mimetype string
-     * @param string|array Acceptable extensions
+     * @param int|string $format Either an imagetype constant or a mimetype string
+     * @param string|array $extensions Acceptable extensions
      *
      * @return string|null
      */
@@ -72,7 +72,7 @@ class Image
     /**
      * Get the date/time an image was taken (using exif data).
      *
-     * @param string The path to the image file, if it starts with a forward slash then an absolute path is assumed, otherwise it is relative to the document root
+     * @param string $path The path to the image file, if it starts with a forward slash then an absolute path is assumed, otherwise it is relative to the document root
      *
      * @return int|null Unix timestamp
      */
@@ -108,7 +108,7 @@ class Image
      * - int "width" The maximum width that the image can be
      * - int "height" The maximum height that the image can be
      *
-     * @param array An array of options (see above)
+     * @param array $options An array of options (see above)
      *
      * @return null
      */
@@ -191,7 +191,7 @@ class Image
      * - int "width" The maximum width that the image can be, if the image is wider it will be resized (maintaining the same aspect ratio)
      * - int "height" The maximum height that the image can be, if the image is taller it will be resized (maintaining the same aspect ratio)
      *
-     * @param array An array of options (see above)
+     * @param array $options An array of options (see above)
      *
      * @return string
      */
@@ -274,8 +274,8 @@ class Image
     /**
      * Create an image resource from an image on disk.
      *
-     * @param string The path to load the image from
-     * @param int Image type constant (http://php.net/manual/en/image.constants.php)
+     * @param string $path The path to load the image from
+     * @param int $format Image type constant (http://php.net/manual/en/image.constants.php)
      *
      * @return resource
      */
@@ -304,9 +304,9 @@ class Image
     /**
      * Save an image resource to the disk.
      *
-     * @param resource The image resource to save
-     * @param string The path to save the image too
-     * @param int Image type constant (http://php.net/manual/en/image.constants.php)
+     * @param resource $image The image resource to save
+     * @param string $path The path to save the image too
+     * @param int $format Image type constant (http://php.net/manual/en/image.constants.php)
      *
      * @return void
      */
@@ -334,8 +334,8 @@ class Image
      * Rotate an image and save it.
      * If no angle to rotate is passed then we attempt to read it from exif data.
      *
-     * @param string The path of the image to work with, and overwrite
-     * @param int A specific rotation angle to apply (clockwise)
+     * @param string $path The path of the image to work with, and overwrite
+     * @param int $rotate A specific rotation angle to apply (clockwise)
      *
      * @return void
      */

@@ -5,12 +5,12 @@ namespace duncan3dc\Helpers;
 class Cache
 {
     /**
-     * @var CacheInstance[] Internal management of the instantiated cache instances
+     * @var CacheInstance[] $instances Internal management of the instantiated cache instances
      */
     private static $instances = [];
 
     /**
-     * @var array Internal storage of cached data
+     * @var array $data Internal storage of cached data
      */
     private static $data = [];
 
@@ -18,7 +18,7 @@ class Cache
     /**
      * Get a named instance of CacheInstance for segregating cache data.
      *
-     * @param string The name of the instance to get
+     * @param string $name The name of the instance to get
      *
      * @return CacheInstance
      */
@@ -34,7 +34,7 @@ class Cache
     /**
      * Check if the specified key has already been cached.
      *
-     * @param string The key of the cached data
+     * @param string $key The key of the cached data
      *
      * @return boolean
      */
@@ -51,7 +51,7 @@ class Cache
     /**
      * Get the stored value of the specified key.
      *
-     * @param string The key of the cached data
+     * @param string $key The key of the cached data
      *
      * @return mixed
      */
@@ -67,8 +67,8 @@ class Cache
     /**
      * Set the specified key to the specified value.
      *
-     * @param string The key of the cached data
-     * @param string The value to storage against the key
+     * @param string $key The key of the cached data
+     * @param string $value The value to storage against the key
      *
      * @return void
      */
@@ -81,7 +81,7 @@ class Cache
     /**
      * Clear a key within the cache data, or call without an argument to clear all the cached data.
      *
-     * @param string The key of the cached data
+     * @param string $key The key of the cached data
      *
      * @return void
      */
@@ -100,8 +100,8 @@ class Cache
     /**
      * Convience method to retrieve a value if it's cached, or run the callback and cache the data now if not.
      *
-     * @param string The key of the cached data
-     * @param callable A function to call that will return the value to cache
+     * @param string $key The key of the cached data
+     * @param callable $func A function to call that will return the value to cache
      *
      * @return mixed
      */

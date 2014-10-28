@@ -10,8 +10,8 @@ class Helper
      * Basically just merge the two arrays, giving user specified options the preference.
      * Also ensures that each paramater in the user array is valid and throws an exception if an unknown element is found.
      *
-     * @param array The array of options passed to the function call
-     * @param array The default options to be used
+     * @param array $userSpecified The array of options passed to the function call
+     * @param array $defaults The default options to be used
      *
      * @return array
      */
@@ -34,8 +34,8 @@ class Helper
      * This is a safe version of the getOptions() method.
      * It allows any custom option key in the userSpecified array.
      *
-     * @param array The array of options passed to the function call
-     * @param array The default options to be used
+     * @param array $userSpecified The array of options passed to the function call
+     * @param array $defaults The default options to be used
      *
      * @return array
      */
@@ -55,7 +55,7 @@ class Helper
     /**
      * Ensure that the passed parameter is a string, or an array of strings.
      *
-     * @param mixed The value to convert to a string
+     * @param mixed $data The value to convert to a string
      *
      * @return string|string[]
      */
@@ -79,7 +79,7 @@ class Helper
      * Ensure that the passed parameter is an array.
      * If it is a truthy value then make it the sole element of an array.
      *
-     * @param mixed The value to convert to an array
+     * @param mixed $value The value to convert to an array
      *
      * @return array
      */
@@ -105,7 +105,7 @@ class Helper
     /**
      * Run each element value through trim() and remove any elements that are falsy.
      *
-     * @param array The array to cleanup
+     * @param array $array The array to cleanup
      *
      * @return array
      */
@@ -137,9 +137,9 @@ class Helper
      * Extension to the standard date() function to handle many more formats.
      * Returns zero if any step of the parsing fails.
      *
-     * @param string The format to apply to the date
-     * @param string|int The date to parse
-     * @param string|int The time to parse
+     * @param string $format The format to apply to the date
+     * @param string|int $date The date to parse
+     * @param string|int $time The time to parse
      *
      * @return int|string
      */
@@ -263,8 +263,8 @@ class Helper
      * Compare two dates and return an integer representing their difference in days.
      * Returns null if any of the parsing fails.
      *
-     * @param string|int The first date to parse
-     * @param string|int The second date to parse
+     * @param string|int $from The first date to parse
+     * @param string|int $to The second date to parse
      *
      * @return int|null
      */
@@ -293,8 +293,8 @@ class Helper
     /**
      * Append parameters on a url (adding a question mark if none is present).
      *
-     * @param string The base url
-     * @param array An array of parameters to append
+     * @param string $url The base url
+     * @param array $params An array of parameters to append
      *
      * @return string
      */
@@ -333,8 +333,8 @@ class Helper
      * - int "min" The minimum number of rows to allow before breaking (default: 5)
      * - int "max" The maximum number of rows to allow before breaking (default: 10)
      *
-     * @param int The total number to calculate from (eg, total number of rows in a table)
-     * @param array An array of options (see above)
+     * @param int $rows The total number to calculate from (eg, total number of rows in a table)
+     * @param array $options An array of options (see above)
      *
      * @return int
      */
@@ -388,7 +388,7 @@ class Helper
      * - bool "numbers" Include numbers (default: true)
      * - bool "specialchars" Include special characters (default: true)
      *
-     * @param array An array of options (see above)
+     * @param array $options An array of options (see above)
      *
      * @return string
      */
@@ -482,8 +482,8 @@ class Helper
      * - bool "alpha" Whether the password must contain letters (default: true)
      * - bool "numbers" Whether the password must contain numbers (default: true)
      *
-     * @param string The password to check
-     * @param array An array of options (see above)
+     * @param string $password The password to check
+     * @param array $options An array of options (see above)
      *
      * @return string[]
      */
@@ -548,8 +548,8 @@ class Helper
      * - bool "returnheaders" CURLOPT_HEADER (default: false)
      * - array "curlopts" Any extra curlopt constants (as the keys) and the values to use (as the values)
      *
-     * @param string|array Can either be a url to use with the default options, or an array of options (see above)
-     * @param string|array Content to send in the body of the request, if an array is passed it will be run through http_build_query()
+     * @param string|array $options Can either be a url to use with the default options, or an array of options (see above)
+     * @param string|array $body Content to send in the body of the request, if an array is passed it will be run through http_build_query()
      *
      * @return string|array If "returnheaders" is false then the body of the response is returned as a string, otherwise an array of data about the response is available
      */

@@ -17,8 +17,8 @@ class Html
      * - string "symbolp" The same as symbol except it is added after the price, not before it
      * - int "decimalPlaces" The number of decimal places the price should show (default: 2)
      *
-     * @param int|float The number to format
-     * @param array An array of options (see above)
+     * @param int|float $val The number to format
+     * @param array $options An array of options (see above)
      *
      * @return string
      */
@@ -74,7 +74,7 @@ class Html
     /**
      * Get the currencies supported by the Html class methods.
      *
-     * @param boolean Whether to return a multi-dimensional array with the symbols of a currency, or just the currency codes and their names
+     * @param boolean $symbols Whether to return a multi-dimensional array with the symbols of a currency, or just the currency codes and their names
      *
      * @return array Keyed by the currency code, value depends on the $symbols parameter
      */
@@ -114,8 +114,8 @@ class Html
      * - string "underscores" Convert underscores to spaces (default: true)
      * - string "ucwords" Run the string through ucwords (default: true)
      *
-     * @param string The string to format
-     * @param array An array of options (see above)
+     * @param string $key The string to format
+     * @param array $options An array of options (see above)
      *
      * @return string
      */
@@ -144,8 +144,8 @@ class Html
      * $options:
      * - string "alt" The string that should be returned if the input is falsey (default: "n/a")
      *
-     * @param string The string to format
-     * @param array An array of options (see above)
+     * @param string $string The string to format
+     * @param array $options An array of options (see above)
      *
      * @return string
      */
@@ -175,8 +175,8 @@ class Html
      * - bool "words" Set to true to never break in the middle of a word (default: true)
      * - string "suffix" The string that should be appended if the input has been shortened (default: "...")
      *
-     * @param string The string to limit
-     * @param array An array of options (see above)
+     * @param string $string The string to limit
+     * @param array $options An array of options (see above)
      *
      * @return string
      */
@@ -223,10 +223,10 @@ class Html
      * $options:
      * - string "alt" The string that should be returned if Helper::date() returns 0 (default: "n/a")
      *
-     * @param string The format to apply to the date
-     * @param string|int The date to parse
-     * @param string|int The time to parse
-     * @param array An array of options (see above)
+     * @param string $format The format to apply to the date
+     * @param string|int $date The date to parse
+     * @param string|int $time The time to parse
+     * @param array $options An array of options (see above)
      *
      * @return string
      */
@@ -249,7 +249,7 @@ class Html
     /**
      * Convert a date into a textual string described the date/time relative to now.
      *
-     * @param string|int The date to parse
+     * @param string|int $date The date to parse
      *
      * @return string
      */
@@ -355,7 +355,7 @@ class Html
      * Wrapper for htmlentities() with default options.
      * Identical to calling htmlentities($string, ENT_QUOTES, "UTF-8")
      *
-     * @param string The string to convert the entities from
+     * @param string $string The string to convert the entities from
      *
      * @return string
      */
@@ -368,7 +368,7 @@ class Html
     /**
      * Take a number of seconds and convert it to the relevant units (seconds, minutes, hours, etc)
      *
-     * @param int The number of seconds
+     * @param int $seconds The number of seconds
      *
      * @return string
      */
@@ -416,9 +416,9 @@ class Html
     /**
      * Take an integer and a word and output it with it's appropriate plural suffix, if required
      *
-     * @param int The number of the $word
-     * @param string The word
-     * @param string The text to append to $word if there are multiple (or zero)
+     * @param int $int The number of the $word
+     * @param string $word The word
+     * @param string $plural The text to append to $word if there are multiple (or zero)
      *
      * @return string
      */
@@ -438,7 +438,7 @@ class Html
      * Send a location header.
      * Then kill the script, incase some output has already been output, we don't want the page to carry on outputing for security reasons.
      *
-     * @param string The url to redirect to
+     * @param string $url The url to redirect to
      *
      * @return void
      */

@@ -5,22 +5,22 @@ namespace duncan3dc\Helpers;
 class Debug
 {
     /**
-     * Whether debugging is currently on or not
+     * @var boolean $on Whether debugging is currently on or not
      */
     protected static $on = false;
 
     /**
-     * The time we started debugging
+     * @var int $time The time we started debugging
      */
     protected static $time = 0;
 
     /**
-     * The mode of the output (html/text)
+     * @var string $mode The mode of the output (html/text)
      */
     protected static $mode = "text";
 
     /**
-     * The current indentation level of output
+     * @var int $indent The current indentation level of output
      */
     protected static $indent = 0;
 
@@ -28,7 +28,7 @@ class Debug
     /**
      * Turn debugging on (so any content is output)
      *
-     * @param string The mode to output in
+     * @param string $mode The mode to output in
      *
      * @return void
      */
@@ -69,8 +69,8 @@ class Debug
     /**
      * Output a message, in the current mode, if we are currently debugging
      *
-     * @param string The message to output
-     * @param mixed Additional data to output
+     * @param string $message The message to output
+     * @param mixed $data Additional data to output
      *
      * @return void
      */
@@ -104,8 +104,8 @@ class Debug
     /**
      * Output a message, in text mode, if we are currently debugging
      *
-     * @param string The message to output
-     * @param mixed Additional data to output
+     * @param string $message The message to output
+     * @param mixed $data Additional data to output
      *
      * @return void
      */
@@ -130,8 +130,8 @@ class Debug
     /**
      * Output a message, in html mode, if we are currently debugging
      *
-     * @param string The message to output
-     * @param mixed Additional data to output
+     * @param string $message The message to output
+     * @param mixed $data Additional data to output
      *
      * @return void
      */
@@ -158,8 +158,8 @@ class Debug
     /**
      * Output a start time, run a callable, then out the endtime
      *
-     * @param string The message to output
-     * @param callable The function to execute
+     * @param string $message The message to output
+     * @param callable $func The function to execute
      *
      * @return void
      */

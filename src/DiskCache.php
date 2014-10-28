@@ -7,7 +7,7 @@ use duncan3dc\Serial\Json;
 class DiskCache
 {
     /**
-     * @var string The base path to use for cache storage
+     * @var string $path The base path to use for cache storage
      */
     public static $path = "/tmp/cache";
 
@@ -15,7 +15,7 @@ class DiskCache
     /**
      * Generate the fullpath to the cache file based on the passed filename.
      *
-     * @param string The filename specified to store the cache in
+     * @param string $filename The filename specified to store the cache in
      *
      * @return string
      */
@@ -46,7 +46,7 @@ class DiskCache
      * Check if the specified key has already been cached.
      * If it has been cached then the time the cached data was last modified is returned.
      *
-     * @param string The key of the cached data
+     * @param string $filename The key of the cached data
      *
      * @return int|null
      */
@@ -67,8 +67,8 @@ class DiskCache
     /**
      * Get the stored value of the specified key.
      *
-     * @param string The key of the cached data
-     * @param int The number of minutes to use the cache for, if the cache is present but older than this time then return null
+     * @param string $filename The key of the cached data
+     * @param int $mins The number of minutes to use the cache for, if the cache is present but older than this time then return null
      *
      * @return mixed
      */
@@ -93,8 +93,8 @@ class DiskCache
     /**
      * Set the specified key to the specified value.
      *
-     * @param string The key of the cached data
-     * @param string The value to storage against the key, this data must be JSON serializable
+     * @param string $filename The key of the cached data
+     * @param string $data The value to storage against the key, this data must be JSON serializable
      *
      * @return void
      */
@@ -108,7 +108,7 @@ class DiskCache
     /**
      * Clear a key within the cache data.
      *
-     * @param string The key of the cached data
+     * @param string $filename The key of the cached data
      *
      * @return void
      */
@@ -129,8 +129,8 @@ class DiskCache
     /**
      * Convience method to retrieve a value if it's cached, or run the callback and cache the data now if not.
      *
-     * @param string The key of the cached data
-     * @param callable A function to call that will return the value to cache
+     * @param string $key The key of the cached data
+     * @param callable $func A function to call that will return the value to cache
      *
      * @return mixed
      */

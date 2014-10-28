@@ -5,17 +5,17 @@ namespace duncan3dc\Helpers;
 class Session
 {
     /**
-     * @var bool Whether the session has been started or not.
+     * @var bool $init Whether the session has been started or not.
      */
     protected static $init = false;
 
     /**
-     * @var string The name of the session.
+     * @var string $name The name of the session.
      */
     protected static $name = "";
 
     /**
-     * @var array The cache of the session data.
+     * @var array $data The cache of the session data.
      */
     protected static $data = [];
 
@@ -23,7 +23,7 @@ class Session
     /**
      * Set the name of the session to use.
      *
-     * @param string The name of the session
+     * @param string $name The name of the session
      *
      * @return void
      */
@@ -68,7 +68,7 @@ class Session
     /**
      * Get a value from the session data cache.
      *
-     * @param string The name of the name to retrieve
+     * @param string $key The name of the name to retrieve
      *
      * @return mixed
      */
@@ -87,8 +87,8 @@ class Session
     /**
      * Set a value within session data.
      *
-     * @param string|array Either the name of the session key to update, or an array of keys to update
-     * @param mixed If $data is a string then store this value in the session data
+     * @param string|array $data Either the name of the session key to update, or an array of keys to update
+     * @param mixed $value If $data is a string then store this value in the session data
      *
      * @return void
      */
@@ -145,8 +145,8 @@ class Session
      * If all else fails then the default value is returned.
      * All checks are truthy/falsy (so a POST value of "0" is ignored).
      *
-     * @param string The name of the key to retrieve from session data
-     * @param mixed The value to use if the current session value is falsy
+     * @param string $key The name of the key to retrieve from session data
+     * @param mixed $default The value to use if the current session value is falsy
      *
      * @return mixed
      */

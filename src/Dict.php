@@ -8,9 +8,9 @@ class Dict
     /**
      * Get an element from an array, or the default if it is not set or it's value is falsy.
      *
-     * @param array The array to get the element from
-     * @param mixed The key within the array to get
-     * @param mixed The default value to return if no element exists or it's value is falsy
+     * @param array $data The array to get the element from
+     * @param mixed $key The key within the array to get
+     * @param mixed $default The default value to return if no element exists or it's value is falsy
      *
      * @return mixed
      */
@@ -29,9 +29,9 @@ class Dict
     /**
      * Get an element from an array, or the default if it is not set.
      *
-     * @param array The array to get the element from
-     * @param mixed The key within the array to get
-     * @param mixed The default value to return if no element exists in the array or it's value is null
+     * @param array $data The array to get the element from
+     * @param mixed $key The key within the array to get
+     * @param mixed $default The default value to return if no element exists in the array or it's value is null
      *
      * @return mixed
      */
@@ -48,8 +48,8 @@ class Dict
     /**
      * Convenience method to retrieve an element from $_GET superglobal.
      *
-     * @param mixed The key from $_GET to get
-     * @param mixed The default value to return if no element exists or it's value is falsy
+     * @param mixed $key The key from $_GET to get
+     * @param mixed $default The default value to return if no element exists or it's value is falsy
      *
      * @return mixed
      */
@@ -62,8 +62,8 @@ class Dict
     /**
      * Convenience method to retrieve an element from $_GET superglobal.
      *
-     * @param mixed The key from $_GET to get
-     * @param mixed The default value to return if no element exists or it's value is null
+     * @param mixed $key The key from $_GET to get
+     * @param mixed $default The default value to return if no element exists or it's value is null
      *
      * @return mixed
      */
@@ -76,8 +76,8 @@ class Dict
     /**
      * Convenience method to retrieve an element from $_POST superglobal.
      *
-     * @param mixed The key from $_POST to get
-     * @param mixed The default value to return if no element exists or it's value is falsy
+     * @param mixed $key The key from $_POST to get
+     * @param mixed $default The default value to return if no element exists or it's value is falsy
      *
      * @return mixed
      */
@@ -90,8 +90,8 @@ class Dict
     /**
      * Convenience method to retrieve an element from $_POST superglobal.
      *
-     * @param mixed The key from $_POST to get
-     * @param mixed The default value to return if no element exists or it's value is null
+     * @param mixed $key The key from $_POST to get
+     * @param mixed $default The default value to return if no element exists or it's value is null
      *
      * @return mixed
      */

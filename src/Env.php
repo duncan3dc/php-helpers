@@ -22,12 +22,12 @@ class Env
     const PATH_VENDOR_PARENT    =   703;
 
     /**
-     * @var string The root path to use
+     * @var string $path The root path to use
      */
     protected static $path;
 
     /**
-     * @var array Internal cache of environment variables
+     * @var array $vars Internal cache of environment variables
      */
     protected static $vars;
 
@@ -35,7 +35,7 @@ class Env
     /**
      * Set the root path to use in the path methods.
      *
-     * @param int|string Either one of the PATH class constants or an actual path to a directory that exists, and is readable
+     * @param int|string $path Either one of the PATH class constants or an actual path to a directory that exists, and is readable
      *
      * @return void
      */
@@ -95,8 +95,8 @@ class Env
     /**
      * Get an absolute path for the specified relative path (relative to the currently used internal root path).
      *
-     * @param string The relative path to append to the root path
-     * @param int|string Either one of the PATH class constants or an actual path to a directory that exists, and is readable
+     * @param string $apend The relative path to append to the root path
+     * @param int|string $use Either one of the PATH class constants or an actual path to a directory that exists, and is readable
      *
      * @return string
      */
@@ -126,7 +126,7 @@ class Env
      * Get an absolute path for the specified relative path, convert symlinks to a canonical path, and check the path exists.
      * This method is very similar to path() except the result is then run through php's standard realpath() function.
      *
-     * @param string The relative path to append to the root path
+     * @param string $append The relative path to append to the root path
      *
      * @return string
      */
@@ -173,7 +173,7 @@ class Env
     /**
      * Get the revision number from the local git clone data.
      *
-     * @param int The length of the revision hash to return
+     * @param int $length The length of the revision hash to return
      *
      * @return string
      */
@@ -236,7 +236,7 @@ class Env
     /**
      * Get a specific environment variable, or null if it doesn't exist.
      *
-     * @param string The name of the variable to retrieve
+     * @param string $var The name of the variable to retrieve
      *
      * @return mixed
      */
@@ -255,7 +255,7 @@ class Env
     /**
      * Get a specific environment variable, throw an exception if it doesn't exist.
      *
-     * @param string The name of the variable to retrieve
+     * @param string $var The name of the variable to retrieve
      *
      * @return mixed
      */
@@ -274,8 +274,8 @@ class Env
     /**
      * Override an environment variable.
      *
-     * @param string The name of the variable to set
-     * @param string|int|boolean The value of the environment variable
+     * @param string $var The name of the variable to set
+     * @param string|int|boolean $value The value of the environment variable
      *
      * @return void
      */
