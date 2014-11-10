@@ -23,7 +23,7 @@ class Helper
             if (array_key_exists($key, $defaults)) {
                 continue;
             }
-            throw new \Exception("Unknown parameter (" . $key . ")");
+            throw new \InvalidArgumentException("Unknown parameter (" . $key . ")");
         }
 
         return $options;
