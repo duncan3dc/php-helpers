@@ -162,7 +162,7 @@ class Helper
                 return $return;
             }
 
-            if (preg_match("/[a-z]/i", $date)) {
+            if (preg_match("/[a-z]/i", $time)) {
                 return $return;
             }
 
