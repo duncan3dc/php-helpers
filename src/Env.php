@@ -9,17 +9,17 @@ class Env
     /**
      * For use with usePath() - Represents the apache document root
      */
-    const PATH_DOCUMENT_ROOT    =   701;
+    const PATH_DOCUMENT_ROOT = 701;
 
     /**
      * For use with usePath() - Represents the directory that the PHP_SELF filename is in
      */
-    const PATH_PHP_SELF         =   702;
+    const PATH_PHP_SELF = 702;
 
     /**
      * For use with usePath() - Represents the parent of the vendor directory (commonly the project root)
      */
-    const PATH_VENDOR_PARENT    =   703;
+    const PATH_VENDOR_PARENT = 703;
 
     /**
      * @var string $path The root path to use
@@ -43,8 +43,8 @@ class Env
     {
         # Use the document root normally set via apache
         if ($path === self::PATH_DOCUMENT_ROOT) {
-            if (empty($_SERVER["DOCUMENT_ROOT"]) || !$path = realpath($_SERVER["DOCUMENT_ROOT"])) {
-                throw new \Exception("DOCUMENT_ROOT not defined");
+            if (empty($_SERVER["DOCUMENT_ROOT"]) || !is_dir($_SERVER["DOCUMENT_ROOT"])) {
+                throw new \InvalidArgumentException("DOCUMENT_ROOT not defined");
             }
             static::$path = $path;
             return;
@@ -53,7 +53,7 @@ class Env
         # Get the full path of the running script and use it's directory
         if ($path === self::PATH_PHP_SELF) {
             if (empty($_SERVER["PHP_SELF"]) || !$path = realpath($_SERVER["PHP_SELF"])) {
-                throw new \Exception("PHP_SELF not defined");
+                throw new \InvalidArgumentException("PHP_SELF not defined");
             }
             static::$path = pathinfo($path, PATHINFO_DIRNAME);
             return;
@@ -68,7 +68,7 @@ class Env
         if (is_dir($path)) {
             static::$path = $path;
         } else {
-            throw new \Exception("Invalid path specified");
+            throw new \InvalidArgumentException("Invalid path specified");
         }
     }
 
