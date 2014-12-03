@@ -2,7 +2,7 @@
 
 namespace duncan3dc\Helpers;
 
-class EnvTest extends \PHPUnit_Framework_TestCase
+class FileTest extends \PHPUnit_Framework_TestCase
 {
     private $path;
     private $file;
