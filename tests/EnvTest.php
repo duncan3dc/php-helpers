@@ -8,7 +8,7 @@ class EnvTest extends \PHPUnit_Framework_TestCase
 {
     protected $path;
 
-    public function __construct()
+    public function setUp()
     {
         Env::usePath(Env::PATH_PHP_SELF);
         $this->path = realpath(pathinfo($_SERVER["PHP_SELF"], PATHINFO_DIRNAME));
@@ -19,6 +19,20 @@ class EnvTest extends \PHPUnit_Framework_TestCase
             "test-boolean"  =>  true,
             "test-exists"   =>  false,
         ]);
+    }
+
+    public function testDocumentRoot1()
+    {
+        unset($_SERVER["DOCUMENT_ROOT"]);
+        $this->setExpectedException("InvalidArgumentException");
+        Env::usePath(Env::PATH_DOCUMENT_ROOT);
+    }
+
+    public function testDocumentRoot2()
+    {
+        $_SERVER["DOCUMENT_ROOT"] = "/tmp";
+        Env::usePath(Env::PATH_DOCUMENT_ROOT);
+        $this->assertSame($_SERVER["DOCUMENT_ROOT"], Env::getPath());
     }
 
     public function testGetPath()

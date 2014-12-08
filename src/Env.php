@@ -46,7 +46,7 @@ class Env
             if (empty($_SERVER["DOCUMENT_ROOT"]) || !is_dir($_SERVER["DOCUMENT_ROOT"])) {
                 throw new \InvalidArgumentException("DOCUMENT_ROOT not defined");
             }
-            static::$path = $path;
+            static::$path = $_SERVER["DOCUMENT_ROOT"];
             return;
         }
 
