@@ -74,7 +74,6 @@ class File extends \SplFileObject
     /**
      * Write to a file, and throw a RuntimeException if it cannot be done.
      *
-     * @param string $filename The path to the file
      * @param string $contents The data to write to the file
      *
      * @return static
@@ -91,7 +90,6 @@ class File extends \SplFileObject
     /**
      * Append to a file, and throw a RuntimeException if it cannot be done.
      *
-     * @param string $filename The path to the file
      * @param string $contents The data to write to the file
      *
      * @return static
