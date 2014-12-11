@@ -13,6 +13,10 @@ class Csv extends \SplFileObject
      */
     public static $lineEnding = "\n";
 
+    /**
+     * @var string $delimiter The character to use for delimitation..
+     */
+    public static $delimiter = ",";
 
     /**
      * Convert a multi-dimensional array of rows and fields to a csv string.
@@ -25,7 +29,7 @@ class Csv extends \SplFileObject
     {
         $tmp = new \SplTempFileObject;
         foreach ($data as $row) {
-            $tmp->fputcsv($row);
+            $tmp->fputcsv($row, static::$delimiter);
             if (static::$lineEnding !== "\n") {
                 $tmp->fseek(-1, \SEEK_CUR);
                 $tmp->fwrite(static::$lineEnding);

@@ -90,6 +90,27 @@ class CsvTest extends \PHPUnit_Framework_TestCase
     }
 
 
+    public function testDelimiter1()
+    {
+        Csv::$delimiter = ";";
+        $this->assertSame("test1;\"other stuff\"\n", Csv::arrayToString([["test1", "other stuff"]]));
+    }
+
+
+    public function testDelimiter2()
+    {
+        Csv::$delimiter = ";";
+        $this->assertSame("test1;other,stuff\n", Csv::arrayToString([["test1", "other,stuff"]]));
+    }
+
+
+    public function testDelimiter3()
+    {
+        Csv::$delimiter = ";";
+        $this->assertSame("test1;\"other;stuff\"\n", Csv::arrayToString([["test1", "other;stuff"]]));
+    }
+
+
     private function expectRuntimeException()
     {
         error_reporting(\E_ALL ^ \E_WARNING);
