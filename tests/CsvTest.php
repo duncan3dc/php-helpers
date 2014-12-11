@@ -11,6 +11,8 @@ class CsvTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         error_reporting(E_ALL);
+        Csv::$lineEnding = "\n";
+
         if (!$this->path) {
             $this->path = __DIR__ . "/files/file1.csv";
             $this->file = new Csv($this->path);
@@ -78,6 +80,13 @@ class CsvTest extends \PHPUnit_Framework_TestCase
     public function testArrayToString3()
     {
         $this->assertSame("\"secret,comma\",ok\n", Csv::arrayToString([["secret,comma", "ok"]]));
+    }
+
+
+    public function testLineEnding()
+    {
+        Csv::$lineEnding = "\r\n";
+        $this->assertSame("test\r\n", Csv::arrayToString([["test"]]));
     }
 
 
