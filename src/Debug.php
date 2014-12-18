@@ -44,7 +44,7 @@ class Debug
 
 
     /**
-     * Turn debugging of (so any content is not output)
+     * Turn debugging off (so any content is not output)
      *
      * @return void
      */
