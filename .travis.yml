@@ -6,11 +6,12 @@ php:
   - hhvm
 
 env:
-  - COMPOSER_ROOT_VERSION=dev-master
+  - COMPOSER_ROOT_VERSION=dev-master COMPOSER_OPTS=""
+  - COMPOSER_ROOT_VERSION=dev-master COMPOSER_OPTS="--prefer-lowest"
 
 install:
   - composer self-update
-  - composer update
+  - composer update $COMPOSER_OPTS
 
 script:
   - phpunit tests
