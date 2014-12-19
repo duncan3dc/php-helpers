@@ -38,6 +38,13 @@ class DiskCache
             }
         }
 
+        # Ensure directory is writable
+        if (!is_writable($path)) {
+            if (!chmod($path, 0755)) {
+                throw new \Exception("Cache directory (" . $path . ") is not writable");
+            }
+        }
+
         return $filename;
     }
 
