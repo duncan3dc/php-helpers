@@ -38,6 +38,11 @@ class DiskCache
             }
         }
 
+        # Ensure directory is writable
+        if (is_writable($path)) {
+            throw new \Exception("cache directory (" . $path . ") is not writable");
+        }
+
         return $filename;
     }
 
