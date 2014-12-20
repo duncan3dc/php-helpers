@@ -175,7 +175,7 @@ class Env
      *
      * @param int $length The length of the revision hash to return
      *
-     * @return string
+     * @return string|void
      */
     public static function getRevision($length = 10)
     {
