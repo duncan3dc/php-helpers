@@ -190,7 +190,7 @@ class Env
                 return;
             }
 
-            $data = file_get_contents($head);
+            $data = File::getContents($head);
             if (!preg_match("/ref: ([^\s]+)\s/", $data, $matches)) {
                 return;
             }
@@ -199,7 +199,7 @@ class Env
                 return;
             }
 
-            return file_get_contents($ref);
+            return File::getContents($ref);
         });
 
         if ($length > 0) {
