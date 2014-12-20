@@ -6,12 +6,9 @@ use duncan3dc\Serial\Json;
 
 class EnvTest extends \PHPUnit_Framework_TestCase
 {
-    protected $path;
-
     public function setUp()
     {
-        Env::usePath(Env::PATH_PHP_SELF);
-        $this->path = realpath(pathinfo($_SERVER["PHP_SELF"], PATHINFO_DIRNAME));
+        Env::usePath(__DIR__);
 
         Json::encodeToFile(Env::path("data/env.json"), [
             "test-string"   =>  "OK",
@@ -37,37 +34,37 @@ class EnvTest extends \PHPUnit_Framework_TestCase
 
     public function testGetPath()
     {
-        $this->assertSame($this->path, Env::getPath());
+        $this->assertSame(__DIR__, Env::getPath());
     }
 
     public function testPath1()
     {
-        $this->assertSame($this->path . "/", Env::path(""));
+        $this->assertSame(__DIR__ . "/", Env::path(""));
     }
 
     public function testPath2()
     {
-        $this->assertSame($this->path . "/test", Env::path("test"));
+        $this->assertSame(__DIR__ . "/test", Env::path("test"));
     }
 
     public function testPath3()
     {
-        $this->assertSame($this->path . "/test", Env::path("/test"));
+        $this->assertSame(__DIR__ . "/test", Env::path("/test"));
     }
 
     public function testRealpath1()
     {
-        $this->assertSame($this->path, Env::realpath(""));
+        $this->assertSame(__DIR__, Env::realpath(""));
     }
 
     public function testRealpath2()
     {
-        $this->assertSame($this->path, Env::realpath("."));
+        $this->assertSame(__DIR__, Env::realpath("."));
     }
 
     public function testRealpath3()
     {
-        $this->assertSame(realpath($this->path . "/.."), Env::realpath(".."));
+        $this->assertSame(realpath(__DIR__ . "/.."), Env::realpath(".."));
     }
 
     public function testGetHostName()
