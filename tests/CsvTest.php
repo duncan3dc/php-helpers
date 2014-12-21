@@ -4,38 +4,112 @@ namespace duncan3dc\Helpers;
 
 class CsvTest extends \PHPUnit_Framework_TestCase
 {
-    private $path;
-    private $file;
-    private $data;
+    protected $data;
+    protected $csv;
 
     public function setUp()
     {
         error_reporting(E_ALL);
-        Csv::$lineEnding = "\n";
 
-        if (!$this->path) {
-            $this->path = __DIR__ . "/files/file1.csv";
-            $this->file = new Csv($this->path);
-            $this->data = [
-                ["field1a", "field2a", "field3a"],
-                ["field1b", "field2b", "field3b"],
-            ];
+        $this->data = [
+            ["field1a", "field2a", "field3a"],
+            ["field1b", "field2b", "field3b"],
+        ];
+
+        $this->csv = new Csv;
+        foreach ($this->data as $row) {
+            $this->csv->addRow($row);
         }
     }
 
 
-    public function testPutGet()
+    protected function assertSameAsTestFile($filename, $string)
     {
-        $this->assertSame($this->data, $this->file->put($this->data)->get());
+        $this->assertSame(File::getContents(__DIR__ . "/files/" . $filename . ".csv"), $string);
     }
 
 
-    public function testAppend()
+    protected function assertRowEqualsString($string, array $row)
     {
-        $data = ["field1c", "field2c", "field3c"];
-        $check = $this->data;
-        $check[] = $data;
-        $this->assertSame($check, $this->file->append([$data])->get());
+        $result = (new Csv)->addRow($row)->asString();
+        $this->assertSame($string, $result);
+    }
+
+
+    public function testBasicAddRows()
+    {
+        $this->assertSameAsTestFile("basic", $this->csv->asString());
+    }
+
+
+    public function testCastAsString()
+    {
+        $this->assertSameAsTestFile("basic", (string) $this->csv);
+    }
+
+
+    public function testWrite()
+    {
+        $path = tempnam("/tmp", "phpunit_csv_");
+        $this->csv->write($path);
+
+        $this->assertSameAsTestFile("basic", File::getContents($path));
+    }
+
+
+    public function testClear()
+    {
+        $this->assertSame("", $this->csv->clear()->asString());
+    }
+
+
+    public function testSpacesInFields()
+    {
+        $this->assertRowEqualsString("\"ok ok\",ok\n", ["ok ok", "ok"]);
+    }
+
+
+    public function testQuotesInFields()
+    {
+        $this->assertRowEqualsString("\"ok \"\"ok\",ok\n", ["ok \"ok", "ok"]);
+    }
+
+
+    public function testCommaInFields()
+    {
+        $this->assertRowEqualsString("\"secret,comma\",ok\n", ["secret,comma", "ok"]);
+    }
+
+
+    public function testLineEnding()
+    {
+        $this->csv->setLineEnding("\r\n");
+        $this->assertSameAsTestFile("crlf", $this->csv->asString());
+    }
+
+
+    public function testDelimiter()
+    {
+        $csv = new Csv;
+        $csv->addRow(["test1", "other stuff"]);
+        $csv->addRow(["test1", "other,stuff"]);
+        $csv->addRow(["test1", "other;stuff"]);
+
+        $csv->setDelimiter(";");
+
+        $this->assertSameAsTestFile("delimiter", $csv->asString());
+    }
+
+
+    public function testDefinedFields()
+    {
+        $csv = new Csv;
+        $csv->defineFields(["artist", "album", "year"]);
+        $csv->addRow([
+            "album"     =>  "duality",
+            "artist"    =>  "set it off",
+        ]);
+        $this->assertSame("\"set it off\",duality,\n", $csv->asString());
     }
 
 
@@ -65,52 +139,6 @@ class CsvTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    public function testArrayToString1()
-    {
-        $this->assertSame("\"ok ok\",ok\n", Csv::arrayToString([["ok ok", "ok"]]));
-    }
-
-
-    public function testArrayToString2()
-    {
-        $this->assertSame("\"ok \"\"ok\",ok\n", Csv::arrayToString([["ok \"ok", "ok"]]));
-    }
-
-
-    public function testArrayToString3()
-    {
-        $this->assertSame("\"secret,comma\",ok\n", Csv::arrayToString([["secret,comma", "ok"]]));
-    }
-
-
-    public function testLineEnding()
-    {
-        Csv::$lineEnding = "\r\n";
-        $this->assertSame("test\r\n", Csv::arrayToString([["test"]]));
-    }
-
-
-    public function testDelimiter1()
-    {
-        Csv::$delimiter = ";";
-        $this->assertSame("test1;\"other stuff\"\n", Csv::arrayToString([["test1", "other stuff"]]));
-    }
-
-
-    public function testDelimiter2()
-    {
-        Csv::$delimiter = ";";
-        $this->assertSame("test1;other,stuff\n", Csv::arrayToString([["test1", "other,stuff"]]));
-    }
-
-
-    public function testDelimiter3()
-    {
-        Csv::$delimiter = ";";
-        $this->assertSame("test1;\"other;stuff\"\n", Csv::arrayToString([["test1", "other;stuff"]]));
-    }
-
-
     private function expectRuntimeException()
     {
         error_reporting(\E_ALL ^ \E_WARNING);
@@ -121,20 +149,13 @@ class CsvTest extends \PHPUnit_Framework_TestCase
     public function testStaticPutFail()
     {
         $this->expectRuntimeException();
-        Csv::putContents($this->path . "/does-not-exist", []);
+        Csv::putContents(__DIR__ . "/does-not-exist/file.csv", []);
     }
 
 
     public function testStaticGetFail()
     {
         $this->expectRuntimeException();
-        Csv::getContents($this->path . "/does-not-exist", []);
-    }
-
-
-    public function testStaticAppendFail()
-    {
-        $this->expectRuntimeException();
-        Csv::appendContents($this->path . "/does-not-exist", []);
+        Csv::getContents(__DIR__ . "/does-not-exist/file.csv", []);
     }
 }

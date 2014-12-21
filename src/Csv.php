@@ -5,40 +5,192 @@ namespace duncan3dc\Helpers;
 /**
  * Allow csv files to be read/written easily and throw exceptions for any failures.
  */
-class Csv extends \SplFileObject
+class Csv
 {
+    /**
+     * @var string $delimiter The character to use for delimitation.
+     */
+    protected $delimiter = ",";
 
     /**
      * @var string $lineEnding The character to use for line endings.
      */
-    public static $lineEnding = "\n";
+    protected $lineEnding = "\n";
 
     /**
-     * @var string $delimiter The character to use for delimitation..
+     * @var array[] $data An array of arrays each representing 1 row in the csv file.
      */
-    public static $delimiter = ",";
+    protected $data = [];
 
     /**
-     * Convert a multi-dimensional array of rows and fields to a csv string.
-     *
-     * @param array $data The data to convert
-     *
-     * @return string The converted csv string
+     * @var array $fields A map of field names to their positions in the row.
      */
-    public static function arrayToString(array $data)
+    protected $fields;
+
+
+    /**
+     * Create a new csv file.
+     *
+     * Instantiating this class is for writing csv files only.
+     *
+     * @param string $delimiter The character to use for delimitation
+     * @param string $lineEnding The character to use for line endings
+     */
+    public function __construct($delimiter = null, $lineEnding = null)
     {
-        $tmp = new \SplTempFileObject;
-        foreach ($data as $row) {
-            $tmp->fputcsv($row, static::$delimiter);
-            if (static::$lineEnding !== "\n") {
-                $tmp->fseek(-1, \SEEK_CUR);
-                $tmp->fwrite(static::$lineEnding);
+        if ($delimiter !== null) {
+            $this->delimiter = $delimiter;
+        }
+        if ($lineEnding !== null) {
+            $this->lineEnding = $lineEnding;
+        }
+    }
+
+
+    /**
+     * Set the character to use for delimitation.
+     *
+     * @param string $delimiter The character to use for delimitation
+     *
+     * @return static
+     */
+    public function setDelimiter($delimiter)
+    {
+        if (!is_string($delimiter) || strlen($delimiter) < 1) {
+            throw new \InvalidArgumentException("Invalid delimiter specified, must be a string at least 1 character long");
+        }
+
+        $this->delimiter = $delimiter;
+
+        return $this;
+    }
+
+
+    /**
+     * Set the character to use for line endings.
+     *
+     * @param string $lineEnding The character to use for line endings
+     *
+     * @return static
+     */
+    public function setLineEnding($lineEnding)
+    {
+        if (!is_string($lineEnding) || strlen($lineEnding) < 1) {
+            throw new \InvalidArgumentException("Invalid line ending specified, must be a string at least 1 character long");
+        }
+
+        $this->lineEnding = $lineEnding;
+
+        return $this;
+    }
+
+
+    /**
+     * Define the name of the fields in the csv file.
+     *
+     * @param array $fields An enumerated array of field names
+     *
+     * @return static
+     */
+    public function defineFields(array $fields)
+    {
+        if (count($fields) < 1) {
+            throw new \InvalidArgumentException("No fields were specified in the array");
+        }
+
+        $this->fields = $fields;
+
+        return $this;
+    }
+
+
+    /**
+     * Remove any previously added rows.
+     *
+     * @return static
+     */
+    public function clear()
+    {
+        $this->data = [];
+
+        return $this;
+    }
+
+
+    /**
+     * Add a row to the csv.
+     *
+     * @param array $row Either an enumerated array or an associative array if the fields have been defined using Csv::defineFields()
+     *
+     * @return static
+     */
+    public function addRow(array $row)
+    {
+        if (is_array($this->fields)) {
+            $assoc = $row;
+            $row = [];
+            foreach ($this->fields as $field) {
+                $row[] = isset($assoc[$field]) ? $assoc[$field] : "";
             }
         }
-        $length = $tmp->ftell();
-        $tmp->fseek(0);
 
+        $this->data[] = $row;
+
+        return $this;
+    }
+
+
+    /**
+     * Write the csv file to disk.
+     *
+     * @return static
+     */
+    public function write($filename)
+    {
+        $data = $this->asString();
+        File::putContents($filename, $data);
+    }
+
+
+
+    /**
+     * Get the csv file as a string.
+     *
+     * @return string
+     */
+    public function asString()
+    {
+        $tmp = new \SplTempFileObject;
+
+        foreach ($this->data as $row) {
+            $tmp->fputcsv($row, $this->delimiter);
+
+            if ($this->lineEnding !== "\n") {
+                $tmp->fseek(-1, \SEEK_CUR);
+                $tmp->fwrite($this->lineEnding);
+            }
+        }
+
+        # Find out how much data we have written
+        $length = $tmp->ftell();
+        if ($length < 1) {
+            return "";
+        }
+
+        # Reset the internal pointer and return all the data we have written
+        $tmp->fseek(0);
         return $tmp->fread($length);
+    }
+
+
+    /**
+     * Handle the object being cast to a string.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->asString();
     }
 
 
@@ -70,7 +222,7 @@ class Csv extends \SplFileObject
 
 
     /**
-     * Write to a file, and throw a RuntimeException if it cannot be done.
+     * Write a csv file, and throw a RuntimeException if it cannot be done.
      *
      * @param string $filename The path to the file
      * @param array $data The data to write to the file
@@ -79,64 +231,12 @@ class Csv extends \SplFileObject
      */
     public static function putContents($filename, array $data)
     {
-        $contents = static::arrayToString($data);
-        File::putContents($filename, $contents);
-    }
+        $csv = new static();
 
+        foreach ($data as $row) {
+            $csv->addRow($row);
+        }
 
-    /**
-     * Append to a file, and throw a RuntimeException if it cannot be done.
-     *
-     * @param string $filename The path to the file
-     * @param string $data The data to write to the file
-     *
-     * @return void
-     */
-    public static function appendContents($filename, array $data)
-    {
-        $contents = static::arrayToString($data);
-        File::appendContents($filename, $contents);
-    }
-
-
-    /**
-     * Read the contents of a file, and throw a RuntimeException if it cannot be done.
-     *
-     * @return array The data read from the file
-     */
-    public function get()
-    {
-        return static::getContents($this->getPathname());
-    }
-
-
-    /**
-     * Write to a file, and throw a RuntimeException if it cannot be done.
-     *
-     * @param array $data The data to write to the file
-     *
-     * @return static
-     */
-    public function put(array $data)
-    {
-        static::putContents($this->getPathname(), $data);
-
-        return $this;
-    }
-
-
-
-    /**
-     * Append to a file, and throw a RuntimeException if it cannot be done.
-     *
-     * @param array $data The data to write to the file
-     *
-     * @return static
-     */
-    public function append(array $data)
-    {
-        static::appendContents($this->getPathname(), $data);
-
-        return $this;
+        $csv->write($filename);
     }
 }
