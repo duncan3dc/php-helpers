@@ -89,4 +89,16 @@ class DiskCacheTest extends \PHPUnit_Framework_TestCase
         $this->assertSame("data1", $data1);
         $this->assertSame("data2", $data2);
     }
+
+    public function testPermissions()
+    {
+        DiskCache::$path = "/tmp/cache/secret";
+        if (!is_dir(DiskCache::$path)) {
+            mkdir(DiskCache::$path);
+        }
+        chmod(DiskCache::$path, 0555);
+
+        DiskCache::set("secret_key", "data");
+        $this->assertSame("data", DiskCache::get("secret_key"));
+    }
 }
