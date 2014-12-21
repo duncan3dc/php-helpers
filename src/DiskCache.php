@@ -33,14 +33,14 @@ class DiskCache
 
         # Ensure the cache directory exists
         if (!is_dir($path)) {
-            if (!mkdir($path, 0775, true)) {
+            if (!mkdir($path, 0777, true)) {
                 throw new \Exception("Unable to create cache directory (" . $path . ")");
             }
         }
 
         # Ensure directory is writable
         if (!is_writable($path)) {
-            if (!chmod($path, 0755)) {
+            if (!chmod($path, 0777)) {
                 throw new \Exception("Cache directory (" . $path . ") is not writable");
             }
         }
