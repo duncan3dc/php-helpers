@@ -212,6 +212,7 @@ class Image
             $fullpath = Env::path($path, Env::PATH_DOCUMENT_ROOT);
         }
 
+        $filename = $options["filename"];
         if ($basename = $options["basename"]) {
             $original = $fullpath . "/original/" . $basename;
             if (file_exists($original)) {
@@ -220,8 +221,6 @@ class Image
                     copy($original, $fullpath . "/original/" . $filename);
                 }
             }
-        } else {
-            $filename = $options["filename"];
         }
 
         if (!$filename) {
