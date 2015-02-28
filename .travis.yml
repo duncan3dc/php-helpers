@@ -6,6 +6,8 @@ php:
   - system
   - hhvm
 
+sudo: false
+
 env:
   global:
     - COMPOSER_ROOT_VERSION=dev-master
