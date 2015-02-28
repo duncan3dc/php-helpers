@@ -6,8 +6,11 @@ php:
   - hhvm
 
 env:
-  - COMPOSER_ROOT_VERSION=dev-master COMPOSER_OPTS=""
-  - COMPOSER_ROOT_VERSION=dev-master COMPOSER_OPTS="--prefer-lowest"
+  global:
+    - COMPOSER_ROOT_VERSION=dev-master
+  matrix:
+    - COMPOSER_OPTS=""
+    - COMPOSER_OPTS="--prefer-lowest"
 
 install:
   - composer self-update
