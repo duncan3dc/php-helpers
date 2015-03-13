@@ -191,6 +191,7 @@ class Session
         unset($_SESSION);
 
         setcookie(static::$name, "", time() - 86400, "/");
+        unset($_COOKIE[static::$name]);
 
         session_destroy();
 
