@@ -1,2 +1,6 @@
 field1a,field2a,field3a
 field1b,field2b,field3b
+"data
+with
+line
+breaks",field2c,field3c

@@ -14,6 +14,7 @@ class CsvTest extends \PHPUnit_Framework_TestCase
         $this->data = [
             ["field1a", "field2a", "field3a"],
             ["field1b", "field2b", "field3b"],
+            ["data\nwith\nline\nbreaks", "field2c", "field3c"],
         ];
 
         $this->csv = new Csv;
