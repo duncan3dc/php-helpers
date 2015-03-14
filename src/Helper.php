@@ -2,6 +2,9 @@
 
 namespace duncan3dc\Helpers;
 
+/**
+ * A bunch of random helper functions.
+ */
 class Helper
 {
 
