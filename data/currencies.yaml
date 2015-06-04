@@ -10,6 +10,10 @@ USD:
     title: US Dollar
     prefix: $
 
+CAD:
+    title: Canadian Dollar
+    prefix: C$
+
 CZK:
     title: Czech Koruna
     suffix: Kč

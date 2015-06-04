@@ -81,7 +81,7 @@ class Html
     public static function getCurrencies($symbols = null)
     {
         $currencies = Cache::call("get-currencies", function() {
-            $currencies = Yaml::decodeFromFile(__DIR__ . "/../data/currencies.yml");
+            $currencies = Yaml::decodeFromFile(__DIR__ . "/../data/currencies.yaml");
             return array_map(function($data) {
                 if (!isset($data["prefix"])) {
                     $data["prefix"] = "";
