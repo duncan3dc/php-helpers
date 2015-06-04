@@ -195,8 +195,8 @@ class Html
         }
 
         if ($options["words"]) {
-            while (strlen($string) > ($options["length"] + $options["extra"])) {
-                $string = substr($string, 0, $options["length"]);
+            while (mb_strlen($string) > ($options["length"] + $options["extra"])) {
+                $string = mb_substr($string, 0, $options["length"]);
                 $string = trim($string);
 
                 $words = explode(" ", $string);
@@ -206,9 +206,9 @@ class Html
                 $string .= $options["suffix"];
             }
         } else {
-            $length = $options["length"] + $options["extra"] + strlen($options["suffix"]);
-            if (strlen($string) > $length) {
-                $string = substr($string, 0, $length);
+            $length = $options["length"] + $options["extra"] + mb_strlen($options["suffix"]);
+            if (mb_strlen($string) > $length) {
+                $string = mb_substr($string, 0, $length);
                 $string .= $options["suffix"];
             }
         }

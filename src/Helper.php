@@ -314,10 +314,10 @@ class Helper
             $url .= "?";
 
         # If the question mark is the last character then no appending is required
-        } elseif ($pos != (strlen($url) - 1)) {
+        } elseif ($pos != (mb_strlen($url) - 1)) {
 
             # If the last character is not an ampersand then append one
-            if (substr($url, -1) != "&") {
+            if (mb_substr($url, -1) != "&") {
                 $url .= "&";
             }
         }
@@ -416,7 +416,7 @@ class Helper
         $exclude = array_merge($options["bad"], $options["exclude"]);
 
         # Keep adding characters until the password is at least as long as required
-        while (strlen($password) < $options["length"]) {
+        while (mb_strlen($password) < $options["length"]) {
 
             # Add a few characters from each acceptable set
 
@@ -466,7 +466,7 @@ class Helper
         }
 
         # Reduce the length of the generated password to the required length
-        $password = substr($password, 0, $options["length"]);
+        $password = mb_substr($password, 0, $options["length"]);
 
         return $password;
     }
@@ -503,13 +503,18 @@ class Helper
 
         $problems = [];
 
-        $len = strlen($password);
+        $len = mb_strlen($password);
+
         if ($len < $options["length"]) {
             $problems["length"] = "Passwords must be at least " . $options["length"] . " characters long";
         }
+
         $unique = [];
         for ($i = 0; $i < $len; ++$i) {
-            $unique[$password[$i]]++;
+            $char = mb_substr($password, $i, 1);
+            if (!in_array($char, $unique)) {
+                $unique[] = $char;
+            }
         }
         if (count($unique) < $options["unique"]) {
             $problems["unique"] = "Passwords must contain at least " . $options["unique"] . " unique characters";
