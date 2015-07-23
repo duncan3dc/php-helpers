@@ -41,3 +41,11 @@ SEK:
 CHF:
     title: Swiss franc
     prefix: CHF
+
+RMB:
+    title: Renminbi
+    prefix: ¥
+
+HKD:
+    title: Hong Kong dollar
+    prefix: HK$
