@@ -90,6 +90,15 @@ class DiskCache
         if (!$mins || $cache > $limit) {
             $filename = static::path($filename);
             $return = Json::decodeFromFile($filename);
+
+            if ($return instanceof \ArrayObject) {
+                $return = $return->asArray();
+            }
+
+            if (array_key_exists("_disk_cache", $return)) {
+                $return = $return["_disk_cache"];
+            }
+
             return $return;
         }
 
@@ -107,6 +116,7 @@ class DiskCache
      */
     public static function set($filename, $data)
     {
+        $data = ["_disk_cache" => $data];
         $filename = static::path($filename);
         Json::encodeToFile($filename, $data);
     }

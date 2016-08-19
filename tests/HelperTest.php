@@ -2,6 +2,8 @@
 
 namespace duncan3dc\Helpers;
 
+use duncan3dc\Serial\ArrayObject as SerialObject;
+
 class HelperTest extends \PHPUnit_Framework_TestCase
 {
 
@@ -63,5 +65,27 @@ class HelperTest extends \PHPUnit_Framework_TestCase
             "test"  =>  "ok",
         ], []);
         $this->assertSame("ok", $check["test"]);
+    }
+
+
+    public function testToArray1()
+    {
+        $check = Helper::toArray(["test" => "ok"]);
+        $this->assertSame(["test" => "ok"], $check);
+    }
+    public function testToArray2()
+    {
+        $check = Helper::toArray("test");
+        $this->assertSame(["test"], $check);
+    }
+    public function testToArray3()
+    {
+        $check = Helper::toArray(new \ArrayObject(["test" => "ok"]));
+        $this->assertSame(["test" => "ok"], $check);
+    }
+    public function testToArray4()
+    {
+        $check = Helper::toArray(new SerialObject(["test" => "ok"]));
+        $this->assertSame(["test" => "ok"], $check);
     }
 }

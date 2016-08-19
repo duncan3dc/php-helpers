@@ -2,6 +2,8 @@
 
 namespace duncan3dc\Helpers;
 
+use duncan3dc\Serial\ArrayObject as SerialObject;
+
 /**
  * A bunch of random helper functions.
  */
@@ -91,6 +93,14 @@ class Helper
         # If it's already an array then just pass it back
         if (is_array($value)) {
             return $value;
+        }
+
+        if ($value instanceof SerialObject) {
+            return $value->asArray();
+        }
+
+        if ($value instanceof \ArrayObject) {
+            return $value->getArrayCopy();
         }
 
         # If it's not an array then create a new array to be returned

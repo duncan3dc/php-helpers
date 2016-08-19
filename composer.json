@@ -12,12 +12,15 @@
         "role": "Developer"
     }],
     "require": {
-        "duncan3dc/serial": ">=0.3.0",
+        "duncan3dc/serial": "^0.4.0|^1.0",
         "ext-curl": "*",
         "ext-date": "*",
         "ext-exif": "*",
         "ext-session": "*",
         "php": ">=5.5.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.5"
     },
     "autoload": {
         "psr-4": {"duncan3dc\\Helpers\\": "src/"}
