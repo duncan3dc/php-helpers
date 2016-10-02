@@ -85,6 +85,9 @@ class HelperTest extends \PHPUnit_Framework_TestCase
     }
     public function testToArray4()
     {
+        if (!class_exists(SerialObject::class)) {
+            $this->markTestSkipped("SerialObject does not exist");
+        }
         $check = Helper::toArray(new SerialObject(["test" => "ok"]));
         $this->assertSame(["test" => "ok"], $check);
     }
