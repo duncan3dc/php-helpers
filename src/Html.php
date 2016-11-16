@@ -2,6 +2,7 @@
 
 namespace duncan3dc\Helpers;
 
+use duncan3dc\Serial\ArrayObject as SerialObject;
 use duncan3dc\Serial\Yaml;
 
 class Html
@@ -82,6 +83,11 @@ class Html
     {
         $currencies = Cache::call("get-currencies", function() {
             $currencies = Yaml::decodeFromFile(__DIR__ . "/../data/currencies.yaml");
+
+            if ($currencies instanceof SerialObject) {
+                $currencies = $currencies->asArray();
+            }
+
             return array_map(function($data) {
                 if (!isset($data["prefix"])) {
                     $data["prefix"] = "";
