@@ -627,7 +627,7 @@ class Helper
         }
 
         if ($headers = $options["headers"]) {
-            $header = "";
+            $header = [];
             foreach ($headers as $key => $val) {
                 $header[] = $key . ": " . $val;
             }
